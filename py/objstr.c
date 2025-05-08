@@ -2203,10 +2203,11 @@ MP_DEFINE_CONST_DICT_WITH_SIZE(mp_obj_memoryview_locals_dict,
 #if !MICROPY_PY_BUILTINS_STR_UNICODE
 static mp_obj_t mp_obj_new_str_iterator(mp_obj_t str, mp_obj_iter_buf_t *iter_buf);
 
+// CIRCUITPY-CHANGE: Diagnose json.dump on invalid types
 MP_DEFINE_CONST_OBJ_TYPE(
     mp_type_str,
     MP_QSTR_str,
-    MP_TYPE_FLAG_NONE,
+    MP_TYPE_FLAG_PRINT_JSON,
     make_new, mp_obj_str_make_new,
     print, str_print,
     binary_op, mp_obj_str_binary_op,

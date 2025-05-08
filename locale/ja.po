@@ -95,7 +95,7 @@ msgstr "%dアドレスピン、%dRGBピン、%dタイルは%dの高さを指示�
 msgid "%q and %q contain duplicate pins"
 msgstr "%q と %q に重複するピンがあります"
 
-#: ports/atmel-samd/common-hal/audioio/AudioOut.c
+#: shared-bindings/audioio/AudioOut.c
 msgid "%q and %q must be different"
 msgstr "%qと%qが必ず異なるのは必要"
 
@@ -115,7 +115,11 @@ msgstr "%q に重複するピンがあります"
 msgid "%q failure: %d"
 msgstr "%q 失敗: %d"
 
-#: py/argcheck.c
+#: shared-module/audiodelays/MultiTapDelay.c
+msgid "%q in %q must be of type %q or %q, not %q"
+msgstr ""
+
+#: py/argcheck.c shared-module/audiofilters/Filter.c
 msgid "%q in %q must be of type %q, not %q"
 msgstr "%q 内の %q は %q 型である必要があり、 %q 型は使用できません"
 
@@ -167,7 +171,7 @@ msgstr "%q の長さは <= %d である必要があります"
 msgid "%q length must be >= %d"
 msgstr "%q の長さは >= %d である必要があります"
 
-#: py/modsys.c py/objmodule.c py/runtime.c
+#: py/modsys.c py/runtime.c
 msgid "%q moved from %q to %q"
 msgstr "%q は %q から %q へ移動しました"
 
@@ -228,6 +232,7 @@ msgstr "%q は 8 の倍数である必要があります"
 #: ports/raspberrypi/bindings/cyw43/__init__.c py/argcheck.c py/objexcept.c
 #: shared-bindings/bitmapfilter/__init__.c shared-bindings/canio/CAN.c
 #: shared-bindings/digitalio/Pull.c shared-bindings/supervisor/__init__.c
+#: shared-module/audiofilters/Filter.c shared-module/displayio/__init__.c
 #: shared-module/synthio/Synthesizer.c
 msgid "%q must be of type %q or %q, not %q"
 msgstr "%q は %q 型か %q 型である必要があります、 %q 型は使用できません"
@@ -238,6 +243,7 @@ msgstr ""
 "%q は %q 型や %q 型または %q 型である必要があります、 %q 型は使用できません"
 
 #: py/argcheck.c py/runtime.c shared-bindings/bitmapfilter/__init__.c
+#: shared-module/audiodelays/MultiTapDelay.c shared-module/synthio/Note.c
 #: shared-module/synthio/__init__.c
 msgid "%q must be of type %q, not %q"
 msgstr "%q は %q 型である必要があります、 %q 型は使用できません"
@@ -553,7 +559,6 @@ msgstr "このピン用の全てのタイマが使用中"
 #: ports/nordic/common-hal/pulseio/PulseIn.c
 #: ports/nordic/peripherals/nrf/timers.c
 #: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
-#: ports/stm/peripherals/timers.c
 msgid "All timers in use"
 msgstr "全てのタイマーが使用中"
 
@@ -579,6 +584,7 @@ msgstr "すでに実行中"
 
 #: ports/espressif/common-hal/wifi/Radio.c
 #: ports/raspberrypi/common-hal/wifi/Radio.c
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
 msgid "Already scanning for wifi networks"
 msgstr ""
 
@@ -605,6 +611,10 @@ msgstr "array のタイプは16ビット ('H') でなければなりません"
 msgid "Array values should be single bytes."
 msgstr "Arrayの各値は1バイトでなければなりません"
 
+#: ports/atmel-samd/common-hal/spitarget/SPITarget.c
+msgid "Async SPI transfer in progress on this bus, keep awaiting."
+msgstr ""
+
 #: shared-module/memorymonitor/AllocationAlarm.c
 #, c-format
 msgid "Attempt to allocate %d blocks"
@@ -612,6 +622,11 @@ msgstr "%d個のブロックの確保を試みました"
 
 #: ports/raspberrypi/audio_dma.c
 msgid "Audio conversion not implemented"
+msgstr ""
+
+#: ports/raspberrypi/common-hal/audiobusio/I2SOut.c
+#: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
+msgid "Audio source error"
 msgstr ""
 
 #: shared-bindings/wifi/Radio.c
@@ -749,6 +764,10 @@ msgstr ""
 msgid "Can only alarm on two low pins from deep sleep."
 msgstr ""
 
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Can't construct AudioOut because continuous channel already open"
+msgstr ""
+
 #: ports/espressif/common-hal/_bleio/Characteristic.c
 #: ports/nordic/common-hal/_bleio/Characteristic.c
 msgid "Can't set CCCD on local Characteristic"
@@ -794,7 +813,7 @@ msgid "Cannot record to a file"
 msgstr "ファイルへ記録できません"
 
 #: shared-module/storage/__init__.c
-msgid "Cannot remount '/' when visible via USB."
+msgid "Cannot remount path when visible via USB."
 msgstr ""
 
 #: shared-bindings/digitalio/DigitalInOut.c
@@ -809,6 +828,10 @@ msgstr "RS485モードにRTSまたはCTSを指定できません"
 #: py/objslice.c
 msgid "Cannot subclass slice"
 msgstr "sliceをサブクラス化することはできません"
+
+#: ports/raspberrypi/common-hal/rp2pio/StateMachine.c
+msgid "Cannot use GPIO0..15 together with GPIO32..47"
+msgstr ""
 
 #: ports/nordic/common-hal/alarm/pin/PinAlarm.c
 msgid "Cannot wake on pin edge, only level"
@@ -872,10 +895,6 @@ msgstr "DACはすでに使用中"
 #: ports/nordic/common-hal/paralleldisplaybus/ParallelBus.c
 msgid "Data 0 pin must be byte aligned"
 msgstr "Data 0 ピンは、バイト整列されていなければなりません"
-
-#: shared-module/audiocore/WaveFile.c
-msgid "Data chunk must follow fmt chunk"
-msgstr "fmtチャンクの後にdataチャンクが続かなければなりません"
 
 #: shared-module/jpegio/JpegDecoder.c
 msgid "Data format error (may be broken data)"
@@ -1007,14 +1026,46 @@ msgstr "接続失敗: 内部エラー"
 msgid "Failed to connect: timeout"
 msgstr "接続失敗: タイムアウト"
 
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to create continuous channels: invalid arg"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to create continuous channels: invalid state"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to create continuous channels: no mem"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to create continuous channels: not found"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to enable continuous"
+msgstr ""
+
 #: shared-module/audiomp3/MP3Decoder.c
 msgid "Failed to parse MP3 file"
 msgstr "MP3ファイルのパーズに失敗"
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to register continuous events callback"
+msgstr ""
 
 #: ports/nordic/sd_mutex.c
 #, c-format
 msgid "Failed to release mutex, err 0x%04x"
 msgstr "ミューテックスの開放に失敗。エラー 0x%04x"
+
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
+msgid "Failed to set hostname"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to start async audio"
+msgstr ""
 
 #: supervisor/shared/safe_mode.c
 msgid "Failed to write internal flash."
@@ -1024,12 +1075,13 @@ msgstr "内部フラッシュ書き込みに失敗"
 msgid "File exists"
 msgstr "ファイルが存在します"
 
-#: shared-module/os/getenv.c
+#: shared-module/lvfontio/OnDiskFont.c shared-module/os/getenv.c
 msgid "File not found"
 msgstr ""
 
 #: ports/atmel-samd/common-hal/canio/Listener.c
 #: ports/espressif/common-hal/canio/Listener.c
+#: ports/mimxrt10xx/common-hal/canio/Listener.c
 #: ports/stm/common-hal/canio/Listener.c
 msgid "Filters too complex"
 msgstr ""
@@ -1162,6 +1214,7 @@ msgid "Insufficient stream input buffer"
 msgstr ""
 
 #: ports/espressif/common-hal/wifi/Radio.c
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
 msgid "Interface must be started"
 msgstr ""
 
@@ -1218,6 +1271,7 @@ msgstr ""
 #: shared-bindings/digitalio/DigitalInOut.c
 #: shared-bindings/epaperdisplay/EPaperDisplay.c shared-bindings/pwmio/PWMOut.c
 #: shared-module/aurora_epaper/aurora_framebuffer.c
+#: shared-module/lvfontio/OnDiskFont.c
 msgid "Invalid %q"
 msgstr "不正な %q"
 
@@ -1281,6 +1335,7 @@ msgid "Invalid hex password"
 msgstr ""
 
 #: ports/espressif/common-hal/wifi/Radio.c
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
 msgid "Invalid multicast MAC address"
 msgstr ""
 
@@ -1293,6 +1348,7 @@ msgid "Invalid socket for TLS"
 msgstr ""
 
 #: ports/espressif/common-hal/espidf/__init__.c
+#: ports/nordic/common-hal/_bleio/__init__.c
 msgid "Invalid state"
 msgstr ""
 
@@ -1335,6 +1391,11 @@ msgstr ""
 #: ports/espressif/common-hal/_bleio/Characteristic.c
 #: ports/espressif/common-hal/_bleio/Descriptor.c
 msgid "MITM security not supported"
+msgstr ""
+
+#: ports/stm/common-hal/sdioio/SDCard.c
+#, c-format
+msgid "MMC/SDIO Clock Error %x"
 msgstr ""
 
 #: shared-bindings/is31fl3741/IS31FL3741.c
@@ -1382,7 +1443,8 @@ msgstr ""
 msgid "Mount point directory missing"
 msgstr ""
 
-#: shared-bindings/busio/UART.c shared-bindings/displayio/Group.c
+#: ports/zephyr-cp/bindings/zephyr_serial/UART.c shared-bindings/busio/UART.c
+#: shared-bindings/displayio/Group.c
 msgid "Must be a %q subclass."
 msgstr "%q のサブクラスでなければなりません"
 
@@ -1522,6 +1584,10 @@ msgstr ""
 msgid "No pulldown on pin; 1Mohm recommended"
 msgstr "ピンにプルダウンがありません。1Mオーム推奨"
 
+#: shared-module/touchio/TouchIn.c
+msgid "No pullup on pin; 1Mohm recommended"
+msgstr ""
+
 #: py/moderrno.c
 msgid "No space left on device"
 msgstr "デバイスに空き容量が残っていません"
@@ -1623,13 +1689,6 @@ msgstr ""
 msgid "Only int or string supported for ip"
 msgstr ""
 
-#: shared-module/displayio/OnDiskBitmap.c
-#, c-format
-msgid ""
-"Only monochrome, indexed 4bpp or 8bpp, and 16bpp or greater BMPs supported: "
-"%d bpp given"
-msgstr ""
-
 #: ports/espressif/common-hal/alarm/touch/TouchAlarm.c
 msgid "Only one %q can be set in deep sleep."
 msgstr ""
@@ -1680,6 +1739,7 @@ msgstr ""
 
 #: ports/espressif/common-hal/socketpool/Socket.c
 #: ports/raspberrypi/common-hal/socketpool/Socket.c
+#: ports/zephyr-cp/common-hal/socketpool/Socket.c
 msgid "Out of sockets"
 msgstr ""
 
@@ -1697,6 +1757,10 @@ msgstr ""
 
 #: ports/raspberrypi/common-hal/countio/Counter.c
 msgid "PWM slice channel A already in use"
+msgstr ""
+
+#: shared-bindings/spitarget/SPITarget.c
+msgid "Packet buffers for an SPI transfer must have the same length."
 msgstr ""
 
 #: shared-module/jpegio/JpegDecoder.c
@@ -1950,11 +2014,13 @@ msgstr "スライスと値の長さが一致しません"
 #: shared-bindings/displayio/TileGrid.c
 #: shared-bindings/memorymonitor/AllocationSize.c
 #: shared-bindings/pulseio/PulseIn.c
+#: shared-bindings/tilepalettemapper/TilePaletteMapper.c
 msgid "Slices not supported"
 msgstr "スライスは対応していません"
 
 #: ports/espressif/common-hal/socketpool/SocketPool.c
 #: ports/raspberrypi/common-hal/socketpool/SocketPool.c
+#: ports/zephyr-cp/common-hal/socketpool/SocketPool.c
 msgid "SocketPool can only be used with wifi.radio"
 msgstr ""
 
@@ -1994,7 +2060,7 @@ msgstr ""
 msgid "The length of rgb_pins must be 6, 12, 18, 24, or 30"
 msgstr ""
 
-#: shared-module/audiodelays/Echo.c shared-module/audiomixer/MixerVoice.c
+#: shared-module/audiocore/__init__.c
 msgid "The sample's %q does not match"
 msgstr ""
 
@@ -2016,7 +2082,9 @@ msgstr ""
 msgid "Tile height must exactly divide bitmap height"
 msgstr "タイルの高さはビットマップの高さを割り切れる値でなければなりません"
 
-#: shared-bindings/displayio/TileGrid.c shared-module/displayio/TileGrid.c
+#: shared-bindings/displayio/TileGrid.c
+#: shared-bindings/tilepalettemapper/TilePaletteMapper.c
+#: shared-module/displayio/TileGrid.c
 msgid "Tile index out of bounds"
 msgstr "タイルのインデクスが範囲外"
 
@@ -2155,6 +2223,10 @@ msgstr "パーザを初期化できません"
 msgid "Unable to read color palette data"
 msgstr "カラーパレットデータを読み込めません"
 
+#: ports/mimxrt10xx/common-hal/canio/CAN.c
+msgid "Unable to send CAN Message: all Tx message buffers are busy"
+msgstr ""
+
 #: ports/espressif/common-hal/mdns/Server.c
 #: ports/raspberrypi/common-hal/mdns/Server.c
 msgid "Unable to start mDNS query"
@@ -2256,6 +2328,7 @@ msgid "Unsupported hash algorithm"
 msgstr ""
 
 #: ports/espressif/common-hal/socketpool/Socket.c
+#: ports/zephyr-cp/common-hal/socketpool/Socket.c
 msgid "Unsupported socket type"
 msgstr ""
 
@@ -2330,6 +2403,7 @@ msgstr ""
 #: ports/espressif/boards/m5stack_core_fire/mpconfigboard.h
 #: ports/espressif/boards/m5stack_stick_c/mpconfigboard.h
 #: ports/espressif/boards/m5stack_stick_c_plus/mpconfigboard.h
+#: ports/espressif/boards/m5stack_stick_c_plus2/mpconfigboard.h
 msgid "You pressed button A at start up."
 msgstr ""
 
@@ -2343,6 +2417,7 @@ msgstr ""
 
 #: ports/espressif/boards/adafruit_feather_esp32c6_4mbflash_nopsram/mpconfigboard.h
 #: ports/espressif/boards/adafruit_itsybitsy_esp32/mpconfigboard.h
+#: ports/espressif/boards/waveshare_esp32_c6_lcd_1_47/mpconfigboard.h
 msgid "You pressed the BOOT button at start up."
 msgstr ""
 
@@ -2401,6 +2476,10 @@ msgstr "bytes-likeオブジェクトが必要"
 
 #: shared-bindings/i2ctarget/I2CTarget.c
 msgid "addresses is empty"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "already playing"
 msgstr ""
 
 #: py/compile.c
@@ -2481,6 +2560,10 @@ msgstr ""
 msgid "attributes not supported"
 msgstr ""
 
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "audio format not supported"
+msgstr ""
+
 #: extmod/ulab/code/ulab_tools.c
 msgid "axis is out of bounds"
 msgstr ""
@@ -2517,6 +2600,10 @@ msgstr "不正なtypecode"
 msgid "binary op %q not implemented"
 msgstr ""
 
+#: ports/espressif/common-hal/audiobusio/PDMIn.c
+msgid "bit_depth must be 8, 16, 24, or 32."
+msgstr ""
+
 #: shared-module/bitmapfilter/__init__.c
 msgid "bitmap size and depth must match"
 msgstr ""
@@ -2529,7 +2616,16 @@ msgstr ""
 msgid "bits must be 32 or less"
 msgstr ""
 
-#: shared-bindings/audiodelays/Echo.c shared-bindings/audiomixer/Mixer.c
+#: shared-bindings/audiodelays/Chorus.c shared-bindings/audiodelays/Echo.c
+#: shared-bindings/audiodelays/MultiTapDelay.c
+#: shared-bindings/audiodelays/PitchShift.c
+#: shared-bindings/audiofilters/Distortion.c
+#: shared-bindings/audiodelays/Reverb.c
+msgid "bits_per_sample must be 16"
+msgstr ""
+
+#: shared-bindings/audiodelays/Echo.c shared-bindings/audiofilters/Distortion.c
+#: shared-bindings/audiofilters/Filter.c shared-bindings/audiomixer/Mixer.c
 msgid "bits_per_sample must be 8 or 16"
 msgstr "bits_per_sampleは8または16でなければなりません"
 
@@ -2610,7 +2706,7 @@ msgstr "式には代入できません"
 msgid "can't cancel self"
 msgstr ""
 
-#: shared-module/adafruit_pixelbuf/PixelBuf.c
+#: py/obj.c shared-module/adafruit_pixelbuf/PixelBuf.c
 msgid "can't convert %q to %q"
 msgstr "%qを%qに変換できません"
 
@@ -3402,10 +3498,6 @@ msgstr "ラベル'%q'は定義されていません"
 msgid "label redefined"
 msgstr "ラベルの再定義"
 
-#: shared-bindings/audiomixer/MixerVoice.c
-msgid "level must be between 0 and 1"
-msgstr "levelは0から1の間でなければなりません"
-
 #: py/objarray.c
 msgid "lhs and rhs should be compatible"
 msgstr "左辺と右辺が互換でなければなりません"
@@ -3955,6 +4047,10 @@ msgstr ""
 msgid "rsplit(None,n)"
 msgstr "rsplit(None,n)"
 
+#: shared-bindings/audiodelays/Reverb.c
+msgid "samples_signed must be true"
+msgstr ""
+
 #: ports/atmel-samd/common-hal/audiobusio/PDMIn.c
 #: ports/raspberrypi/common-hal/audiobusio/PDMIn.c
 msgid "sampling rate out of range"
@@ -4240,7 +4336,9 @@ msgstr ""
 msgid "unreadable attribute"
 msgstr "読み込み不可能な属性"
 
-#: shared-bindings/displayio/TileGrid.c shared-bindings/vectorio/VectorShape.c
+#: shared-bindings/displayio/TileGrid.c shared-bindings/terminalio/Terminal.c
+#: shared-bindings/tilepalettemapper/TilePaletteMapper.c
+#: shared-bindings/vectorio/VectorShape.c
 msgid "unsupported %q type"
 msgstr "非対応の型 %q"
 
@@ -4320,6 +4418,7 @@ msgstr ""
 
 #: ports/espressif/common-hal/wifi/Radio.c
 #: ports/raspberrypi/common-hal/wifi/Radio.c
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
 msgid "wifi is not enabled"
 msgstr ""
 
@@ -4384,6 +4483,12 @@ msgstr "ziはfloat値でなければなりません"
 #: extmod/ulab/code/scipy/signal/signal.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr ""
+
+#~ msgid "Data chunk must follow fmt chunk"
+#~ msgstr "fmtチャンクの後にdataチャンクが続かなければなりません"
+
+#~ msgid "level must be between 0 and 1"
+#~ msgstr "levelは0から1の間でなければなりません"
 
 #~ msgid "The sample's bits_per_sample does not match the mixer's"
 #~ msgstr "サンプルのbits_per_sampleがミキサーのそれと一致しません"

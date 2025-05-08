@@ -710,10 +710,11 @@ static const mp_rom_map_elem_t dict_locals_dict_table[] = {
 
 static MP_DEFINE_CONST_DICT(dict_locals_dict, dict_locals_dict_table);
 
+// CIRCUITPY-CHANGE: Diagnose json.dump on invalid types
 MP_DEFINE_CONST_OBJ_TYPE(
     mp_type_dict,
     MP_QSTR_dict,
-    MP_TYPE_FLAG_ITER_IS_GETITER,
+    MP_TYPE_FLAG_ITER_IS_GETITER | MP_TYPE_FLAG_PRINT_JSON,
     make_new, mp_obj_dict_make_new,
     print, dict_print,
     unary_op, dict_unary_op,
@@ -724,10 +725,11 @@ MP_DEFINE_CONST_OBJ_TYPE(
     );
 
 #if MICROPY_PY_COLLECTIONS_ORDEREDDICT
+// CIRCUITPY-CHANGE: Diagnose json.dump on invalid types
 MP_DEFINE_CONST_OBJ_TYPE(
     mp_type_ordereddict,
     MP_QSTR_OrderedDict,
-    MP_TYPE_FLAG_ITER_IS_GETITER,
+    MP_TYPE_FLAG_ITER_IS_GETITER | MP_TYPE_FLAG_PRINT_JSON,
     make_new, mp_obj_dict_make_new,
     print, dict_print,
     unary_op, dict_unary_op,
@@ -745,7 +747,8 @@ void mp_obj_dict_init(mp_obj_dict_t *dict, size_t n_args) {
 }
 
 mp_obj_t mp_obj_new_dict(size_t n_args) {
-    mp_obj_dict_t *o = m_new_obj(mp_obj_dict_t);
+    // CIRCUITPY-CHANGE: Use mp_obj_malloc because it is a Python object
+    mp_obj_dict_t *o = mp_obj_malloc(mp_obj_dict_t, &mp_type_dict);
     mp_obj_dict_init(o, n_args);
     return MP_OBJ_FROM_PTR(o);
 }

@@ -236,10 +236,11 @@ static mp_obj_t str_subscr(mp_obj_t self_in, mp_obj_t index, mp_obj_t value) {
     }
 }
 
+// CIRCUITPY-CHANGE: Diagnose json.dump on invalid types
 MP_DEFINE_CONST_OBJ_TYPE(
     mp_type_str,
     MP_QSTR_str,
-    MP_TYPE_FLAG_ITER_IS_GETITER,
+    MP_TYPE_FLAG_ITER_IS_GETITER | MP_TYPE_FLAG_PRINT_JSON,
     make_new, mp_obj_str_make_new,
     print, uni_print,
     unary_op, uni_unary_op,

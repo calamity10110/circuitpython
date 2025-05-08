@@ -16,6 +16,10 @@
 #include "py/stream.h"
 #include "shared-bindings/fontio/BuiltinFont.h"
 
+#if CIRCUITPY_LVFONTIO
+#include "shared-bindings/lvfontio/OnDiskFont.h"
+#endif
+
 //| class Terminal:
 //|     """Display a character stream with a TileGrid
 //|
@@ -30,9 +34,32 @@
 //|
 //|     VT100 control sequences:
 //|     * ``ESC [ K`` - Clear the remainder of the line
+//|     * ``ESC [ 0 K`` - Clear the remainder of the line
+//|     * ``ESC [ 1 K`` - Clear start of the line to cursor
+//|     * ``ESC [ 2 K`` - Clear the entire line
 //|     * ``ESC [ #### D`` - Move the cursor to the left by ####
 //|     * ``ESC [ 2 J`` - Erase the entire display
 //|     * ``ESC [ nnnn ; mmmm H`` - Move the cursor to mmmm, nnnn.
+//|     * ``ESC [ H`` - Move the cursor to 0,0.
+//|     * ``ESC M`` - Move the cursor up one line, scrolling if necessary.
+//|     * ``ESC D`` - Move the cursor down one line, scrolling if necessary.
+//|     * ``ESC [ r`` - Disable scrolling range (set to fullscreen).
+//|     * ``ESC [ nnnn ; mmmm r`` - Set scrolling range between rows nnnn and mmmm.
+//|     * ``ESC [ ## m`` - Set the terminal display attributes.
+//|     * ``ESC [ ## ; ## m`` - Set the terminal display attributes.
+//|     * ``ESC [ ## ; ## ; ## m`` - Set the terminal display attributes.
+//|
+//|     Supported Display attributes:
+//|     0 - Reset all attributes
+//|     Foreground Colors    Background Colors
+//|     30 - Black           40 - Black
+//|     31 - Red             41 - Red
+//|     32 - Green           42 - Green
+//|     33 - Yellow          43 - Yellow
+//|     34 - Blue            44 - Blue
+//|     35 - Magenta         45 - Magenta
+//|     36 - Cyan            46 - Cyan
+//|     37 - White           47 - White
 //|     """
 //|
 //|     def __init__(
@@ -40,11 +67,12 @@
 //|         scroll_area: displayio.TileGrid,
 //|         font: fontio.BuiltinFont,
 //|         *,
-//|         status_bar: Optional[displayio.TileGrid] = None
+//|         status_bar: Optional[displayio.TileGrid] = None,
 //|     ) -> None:
 //|         """Terminal manages tile indices and cursor position based on VT100 commands. The font should be
 //|         a `fontio.BuiltinFont` and the TileGrid's bitmap should match the font's bitmap."""
 //|         ...
+//|
 
 static mp_obj_t terminalio_terminal_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args) {
     enum { ARG_scroll_area, ARG_font, ARG_status_bar };
@@ -62,10 +90,28 @@ static mp_obj_t terminalio_terminal_make_new(const mp_obj_type_t *type, size_t n
         status_bar = mp_arg_validate_type(args[ARG_status_bar].u_obj, &displayio_tilegrid_type, MP_QSTR_status_bar);
     }
 
-    fontio_builtinfont_t *font = mp_arg_validate_type(args[ARG_font].u_obj, &fontio_builtinfont_type, MP_QSTR_font);
+    mp_obj_t font = args[ARG_font].u_obj;
 
-    mp_arg_validate_int_min(scroll_area->width_in_tiles, 2, MP_QSTR_scroll_area_width);
-    mp_arg_validate_int_min(scroll_area->height_in_tiles, 2, MP_QSTR_scroll_area_height);
+    // Ensure the font is one of the supported types
+    bool valid_font = false;
+
+    #if CIRCUITPY_FONTIO
+    if (mp_obj_is_type(font, &fontio_builtinfont_type)) {
+        valid_font = true;
+    }
+    #endif
+
+    #if CIRCUITPY_LVFONTIO
+    if (mp_obj_is_type(font, &lvfontio_ondiskfont_type)) {
+        valid_font = true;
+    }
+    #endif
+
+    if (!valid_font) {
+        mp_raise_TypeError_varg(MP_ERROR_TEXT("unsupported %q type"), MP_QSTR_font);
+    }
+
+    mp_arg_validate_int_min(scroll_area->width_in_tiles * scroll_area->height_in_tiles, 2, MP_QSTR_scroll_area_area);
 
     terminalio_terminal_obj_t *self = mp_obj_malloc(terminalio_terminal_obj_t, &terminalio_terminal_type);
 
@@ -81,6 +127,7 @@ static mp_obj_t terminalio_terminal_make_new(const mp_obj_type_t *type, size_t n
 //|         :return: the number of bytes written
 //|         :rtype: int or None"""
 //|         ...
+//|
 //|
 static mp_uint_t terminalio_terminal_write(mp_obj_t self_in, const void *buf_in, mp_uint_t size, int *errcode) {
     terminalio_terminal_obj_t *self = MP_OBJ_TO_PTR(self_in);
@@ -107,7 +154,7 @@ static mp_uint_t terminalio_terminal_ioctl(mp_obj_t self_in, mp_uint_t request, 
 
 static const mp_rom_map_elem_t terminalio_terminal_locals_dict_table[] = {
     // Standard stream methods.
-    { MP_OBJ_NEW_QSTR(MP_QSTR_write),    MP_ROM_PTR(&mp_stream_write_obj) },
+    { MP_ROM_QSTR(MP_QSTR_write),    MP_ROM_PTR(&mp_stream_write_obj) },
 };
 static MP_DEFINE_CONST_DICT(terminalio_terminal_locals_dict, terminalio_terminal_locals_dict_table);
 

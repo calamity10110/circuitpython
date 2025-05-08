@@ -6,26 +6,6 @@
 
 include ../../py/circuitpy_mkenv.mk
 
-ifeq ($(IDF_TARGET),esp32c2)
-IDF_TARGET_ARCH = riscv
-CROSS_COMPILE = riscv32-esp-elf-
-else ifeq ($(IDF_TARGET),esp32c3)
-IDF_TARGET_ARCH = riscv
-CROSS_COMPILE = riscv32-esp-elf-
-else ifeq ($(IDF_TARGET),esp32p4)
-IDF_TARGET_ARCH = riscv
-CROSS_COMPILE = riscv32-esp-elf-
-else ifeq ($(IDF_TARGET),esp32c6)
-IDF_TARGET_ARCH = riscv
-CROSS_COMPILE = riscv32-esp-elf-
-else ifeq ($(IDF_TARGET),esp32h2)
-IDF_TARGET_ARCH = riscv
-CROSS_COMPILE = riscv32-esp-elf-
-else
-IDF_TARGET_ARCH = xtensa
-CROSS_COMPILE = xtensa-$(IDF_TARGET)-elf-
-endif
-
 ifeq ($(IDF_TARGET),esp32s3)
 BT_IDF_TARGET = esp32c3
 else
@@ -95,12 +75,17 @@ INC += \
 	-isystem esp-idf/components/esp_hw_support/dma/include \
 	-isystem esp-idf/components/esp_hw_support/include \
 	-isystem esp-idf/components/esp_hw_support/include/soc \
+	-isystem esp-idf/components/esp_hw_support/port/$(IDF_TARGET)/private_include \
+	-isystem esp-idf/components/esp_mm/include \
 	-isystem esp-idf/components/esp_netif/include \
 	-isystem esp-idf/components/esp_partition/include \
 	-isystem esp-idf/components/esp_pm/include \
 	-isystem esp-idf/components/esp_psram/include \
 	-isystem esp-idf/components/esp_ringbuf/include \
 	-isystem esp-idf/components/esp_rom/include \
+	-isystem esp-idf/components/esp_rom/$(IDF_TARGET)/include \
+	-isystem esp-idf/components/esp_rom/$(IDF_TARGET)/include/$(IDF_TARGET) \
+	-isystem esp-idf/components/esp_security/include \
 	-isystem esp-idf/components/esp_system/include \
 	-isystem esp-idf/components/esp_timer/include \
 	-isystem esp-idf/components/esp_wifi/include \
@@ -133,6 +118,7 @@ INC += \
 	-isystem esp-idf/components/sdmmc/include \
 	-isystem esp-idf/components/soc/include \
 	-isystem esp-idf/components/soc/$(IDF_TARGET)/include \
+	-isystem esp-idf/components/soc/$(IDF_TARGET)/register \
 	-isystem esp-idf/components/spi_flash/include \
 	-isystem esp-idf/components/usb/include \
 	-isystem esp-idf/components/ulp/ulp_fsm/include \
@@ -189,12 +175,12 @@ ifeq ($(DEBUG), 1)
 		OPTIMIZATION_FLAGS ?= -Og
 		CFLAGS += -DDEBUG
 	endif
-	# You may want to enable these flags to make setting breakpoints easier.
-	# CFLAGS += -fno-inline -fno-ipa-sra
+#	You may want to enable these flags to make setting breakpoints easier.
+#	CFLAGS += -fno-inline -fno-ipa-sra
 else
 	CFLAGS += -DNDEBUG
-	# RISC-V is larger than xtensa
-	# Use -Os for RISC-V when it overflows
+#	RISC-V is larger than xtensa
+#	Use -Os for RISC-V when it overflows
 	ifeq ($(IDF_TARGET_ARCH),riscv)
 		OPTIMIZATION_FLAGS ?= -Os
 	else
@@ -256,7 +242,6 @@ ifeq ($(IDF_TARGET),esp32)
 LDFLAGS += \
 	-Tesp32.rom.newlib-data.ld \
 	-Tesp32.rom.newlib-funcs.ld \
-	-Tesp32.rom.newlib-time.ld \
 	-Tesp32.rom.spiflash_legacy.ld
 
 CHIP_COMPONENTS = \
@@ -264,6 +249,7 @@ CHIP_COMPONENTS = \
 
 else ifeq ($(IDF_TARGET),esp32c2)
 LDFLAGS += \
+	-Tesp32c2.rom.ble.ld \
 	-Tesp32c2.rom.heap.ld \
 	-Tesp32c2.rom.newlib.ld \
 	-Tesp32c2.rom.version.ld \
@@ -278,9 +264,9 @@ CHIP_COMPONENTS = \
 else ifeq ($(IDF_TARGET),esp32c3)
 LDFLAGS += \
 	-Tesp32c3.rom.newlib.ld \
-	-Tesp32c3.rom.newlib-time.ld \
 	-Tesp32c3.rom.version.ld \
-	-Tesp32c3.rom.eco3.ld
+	-Tesp32c3.rom.eco3.ld \
+	-Tesp32c3.rom.bt_funcs.ld
 
 CHIP_COMPONENTS = \
 	esp_driver_tsens
@@ -324,7 +310,6 @@ else ifeq ($(IDF_TARGET),esp32s2)
 LDFLAGS += \
 	-Tesp32s2.rom.newlib-data.ld \
 	-Tesp32s2.rom.newlib-funcs.ld \
-	-Tesp32s2.rom.newlib-time.ld \
 	-Tesp32s2.rom.spiflash_legacy.ld
 
 CHIP_COMPONENTS = \
@@ -336,7 +321,8 @@ LDFLAGS += \
 	-Tesp32s3.rom.newlib.ld \
 	-Tesp32s3.rom.version.ld \
 	-Tesp32s3.rom.systimer.ld \
-	-Tesp32s3.rom.wdt.ld
+	-Tesp32s3.rom.wdt.ld \
+	-Tesp32s3.rom.bt_funcs.ld
 
 CHIP_COMPONENTS = \
 	esp_driver_tsens
@@ -375,10 +361,19 @@ CFLAGS += \
 	-DCFG_TUD_TASK_QUEUE_SZ=32
 endif
 ifeq ($(CIRCUITPY_USB_DEVICE),1)
+ifeq ($(IDF_TARGET),esp32s2)
+# Make more room in internal RAM on the S2.
+CFLAGS += \
+	-DCFG_TUD_CDC_RX_BUFSIZE=128 \
+	-DCFG_TUD_CDC_TX_BUFSIZE=128 \
+	-DCFG_TUD_MSC_BUFSIZE=1024
+else
 CFLAGS += \
 	-DCFG_TUD_CDC_RX_BUFSIZE=1024 \
 	-DCFG_TUD_CDC_TX_BUFSIZE=1024 \
-	-DCFG_TUD_MSC_BUFSIZE=4096 \
+	-DCFG_TUD_MSC_BUFSIZE=4096
+endif
+CFLAGS += \
 	-DCFG_TUD_MIDI_RX_BUFSIZE=128 \
 	-DCFG_TUD_MIDI_TX_BUFSIZE=128 \
 	-DCFG_TUD_VENDOR_RX_BUFSIZE=128 \
@@ -398,7 +393,7 @@ SRC_C += \
 	peripherals/$(IDF_TARGET)/pins.c
 
 ifeq ($(CIRCUITPY_SSL),1)
-SRC_C += lib/mbedtls_config/crt_bundle.c
+SRC_C += common-hal/ssl/crt_bundle.c
 endif
 
 SRC_C += $(wildcard common-hal/espidf/*.c)
@@ -412,14 +407,16 @@ SRC_C += peripherals/touch.c
 endif
 
 ifneq ($(CIRCUITPY_USB_DEVICE),0)
-SRC_C += lib/tinyusb/src/portable/espressif/esp32sx/dcd_esp32sx.c
+SRC_C += \
+	lib/tinyusb/src/portable/synopsys/dwc2/dcd_dwc2.c \
+	lib/tinyusb/src/portable/synopsys/dwc2/dwc2_common.c
 endif
 
 ifneq ($(CIRCUITPY_AUDIOBUSIO),0)
 CHIP_COMPONENTS += esp_driver_i2s
 endif
 
-ifneq ($(CIRCUITPY_BLEIO),0)
+ifneq ($(CIRCUITPY_BLEIO_NATIVE),0)
 SRC_C += common-hal/_bleio/ble_events.c
 endif
 
@@ -484,24 +481,13 @@ ifneq ($(CIRCUITPY_FREQUENCYIO),0)
 CHIP_COMPONENTS += esp_driver_pcnt
 endif
 
-SRC_COMMON_HAL_EXPANDED = \
-	$(addprefix shared-bindings/, $(SRC_COMMON_HAL)) \
-	$(addprefix shared-bindings/, $(SRC_BINDINGS_ENUMS)) \
-	$(addprefix common-hal/, $(SRC_COMMON_HAL))
-
-SRC_SHARED_MODULE_EXPANDED = \
-	$(addprefix shared-bindings/, $(SRC_SHARED_MODULE)) \
-	$(addprefix shared-module/, $(SRC_SHARED_MODULE)) \
-	$(addprefix shared-module/, $(SRC_SHARED_MODULE_INTERNAL))
-
 ifneq ($(FROZEN_MPY_DIR),)
 FROZEN_MPY_PY_FILES := $(shell find -L $(FROZEN_MPY_DIR) -type f -name '*.py')
 FROZEN_MPY_MPY_FILES := $(addprefix $(BUILD)/,$(FROZEN_MPY_PY_FILES:.py=.mpy))
 endif
 
 OBJ += $(PY_O) $(SUPERVISOR_O) $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
-OBJ += $(addprefix $(BUILD)/, $(SRC_COMMON_HAL_EXPANDED:.c=.o))
-OBJ += $(addprefix $(BUILD)/, $(SRC_SHARED_MODULE_EXPANDED:.c=.o))
+OBJ += $(addprefix $(BUILD)/, $(SRC_COMMON_HAL_SHARED_MODULE_EXPANDED:.c=.o))
 ifeq ($(INTERNAL_LIBM),1)
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
 endif
@@ -514,7 +500,7 @@ $(filter $(PY_BUILD)/../extmod/vfs_fat_%.o, $(PY_O)): COPT += -Os
 $(BUILD)/lib/protomatter/src/core.o: CFLAGS += -DESP32
 
 # List of sources for qstr extraction
-SRC_QSTR += $(SRC_C) $(SRC_SUPERVISOR) $(SRC_MOD) $(SRC_COMMON_HAL_EXPANDED) $(SRC_SHARED_MODULE_EXPANDED) $(SRC_CIRCUITPY_COMMON)
+SRC_QSTR += $(SRC_C) $(SRC_SUPERVISOR) $(SRC_MOD) $(SRC_COMMON_HAL_SHARED_MODULE_EXPANDED) $(SRC_CIRCUITPY_COMMON)
 
 # IDF build commands
 IDF_PATH = $(realpath ./esp-idf)
@@ -560,7 +546,7 @@ else
 endif
 
 SDKCONFIGS := esp-idf-config/sdkconfig.defaults;$(DEBUG_SDKCONFIG);$(FLASH_SIZE_SDKCONFIG);$(FLASH_MODE_SDKCONFIG);$(FLASH_SPEED_SDKCONFIG);$(PSRAM_SDKCONFIG);$(PSRAM_SIZE_SDKCONFIG);$(PSRAM_MODE_SDKCONFIG);$(PSRAM_SPEED_SDKCONFIG);$(TARGET_SDKCONFIG);boards/$(BOARD)/sdkconfig
-ifneq ($(CIRCUITPY_BLEIO),0)
+ifneq ($(CIRCUITPY_BLEIO_NATIVE),0)
 	SDKCONFIGS := esp-idf-config/sdkconfig-ble.defaults;$(SDKCONFIGS)
 endif
 # create the config headers
@@ -618,9 +604,9 @@ endif
 
 ESP_IDF_COMPONENTS_LINK = $(IDF_TARGET_ARCH) $(CHIP_COMPONENTS) app_update bootloader_support driver esp_driver_gpio esp_driver_gptimer esp_driver_i2c esp_driver_ledc esp_driver_spi esp_driver_uart efuse esp_adc esp_app_format esp_common esp_event esp_hw_support esp_mm esp_partition esp_pm esp_ringbuf esp_rom esp_system esp_timer freertos hal heap log newlib nvs_flash pthread soc spi_flash vfs esp_vfs_console
 ifneq ($(CIRCUITPY_WIFI),0)
-	ESP_IDF_COMPONENTS_LINK += esp_coex esp_netif esp-tls esp_wifi lwip mbedtls mdns wpa_supplicant esp_phy
+	ESP_IDF_COMPONENTS_LINK += esp_coex esp_netif esp_security esp-tls esp_wifi lwip mbedtls mdns wpa_supplicant esp_phy
 endif
-ifneq ($(CIRCUITPY_BLEIO),0)
+ifneq ($(CIRCUITPY_BLEIO_NATIVE),0)
 	BLE_IMPL_esp32 := esp32
 	BLE_IMPL_esp32s3 := esp32c3
 	BLE_IMPL_esp32c2 := libble
@@ -629,10 +615,10 @@ ifneq ($(CIRCUITPY_BLEIO),0)
 	BLE_IMPL_esp32h2 := libble
 	BLE_IMPL = $(BLE_IMPL_$(IDF_TARGET))
 
-	ESP_IDF_COMPONENTS_LINK += bt esp_phy
+	ESP_IDF_COMPONENTS_LINK += bt esp_phy esp_security
 	ifeq ($(BLE_IMPL),esp32)
-		# BLE will hang the ESP32 and trigger an interrupt watchdog without this undefined symbol at
-		# link because a weak version of the interrupt that BLE uses will be linked incorrectly.
+#		BLE will hang the ESP32 and trigger an interrupt watchdog without this undefined symbol at
+#		link because a weak version of the interrupt that BLE uses will be linked incorrectly.
 		REGISTRATION_FUNCTIONS += -u ld_include_hli_vectors_bt
 		BINARY_BLOBS += esp-idf/components/bt/controller/lib_esp32/$(IDF_TARGET)/libbtdm_app.a
 	endif
@@ -643,9 +629,16 @@ ifneq ($(CIRCUITPY_BLEIO),0)
 	endif
 
 	ifeq ($(BLE_IMPL),libble)
-	BINARY_BLOBS += esp-idf/components/esp_phy/lib/$(IDF_TARGET)/libbtbb.a \
-					esp-idf/components/bt/controller/lib_$(IDF_TARGET)/$(IDF_TARGET)-bt-lib/libble_app.a
+	BINARY_BLOBS += esp-idf/components/esp_phy/lib/$(IDF_TARGET)/libbtbb.a
+	ifeq ($(IDF_TARGET),esp32c6)
+		BINARY_BLOBS += esp-idf/components/bt/controller/lib_$(IDF_TARGET)/$(IDF_TARGET)-bt-lib/$(IDF_TARGET)/libble_app.a
+	else
+		BINARY_BLOBS += esp-idf/components/bt/controller/lib_$(IDF_TARGET)/$(IDF_TARGET)-bt-lib/libble_app.a
 	endif
+	endif
+endif
+ifeq ($(IDF_TARGET),esp32p4)
+    ESP_IDF_COMPONENTS_LINK += esp_security
 endif
 ifneq ($(CIRCUITPY_ESPULP),0)
 	ESP_IDF_COMPONENTS_LINK += ulp
@@ -766,6 +759,7 @@ endif
 
 UF2_FAMILY_ID_esp32s2 = 0xbfdd4eee
 UF2_FAMILY_ID_esp32s3 = 0xc47e5767
+UF2_FAMILY_ID_esp32p4 = 0x540ddf62
 
 $(BUILD)/firmware.uf2: $(BUILD)/circuitpython-firmware.bin
 	$(STEPECHO) "Create $@"

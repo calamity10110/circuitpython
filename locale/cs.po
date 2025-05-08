@@ -93,7 +93,7 @@ msgstr "%d adresní pin, %d rgb pin a %d dlaždice indikuje výšku %d, ne %d"
 msgid "%q and %q contain duplicate pins"
 msgstr "%q a %q obsahují duplicitní piny"
 
-#: ports/atmel-samd/common-hal/audioio/AudioOut.c
+#: shared-bindings/audioio/AudioOut.c
 msgid "%q and %q must be different"
 msgstr "%q a %q musí být rozdílné"
 
@@ -113,7 +113,11 @@ msgstr "%q obsahuje duplicitní piny"
 msgid "%q failure: %d"
 msgstr "%q: selhání %d"
 
-#: py/argcheck.c
+#: shared-module/audiodelays/MultiTapDelay.c
+msgid "%q in %q must be of type %q or %q, not %q"
+msgstr ""
+
+#: py/argcheck.c shared-module/audiofilters/Filter.c
 msgid "%q in %q must be of type %q, not %q"
 msgstr "%q v %q musí být typu %q, ne %q"
 
@@ -165,7 +169,7 @@ msgstr "Délka %q musí být <= %d"
 msgid "%q length must be >= %d"
 msgstr "Délka %q musí být >= %d"
 
-#: py/modsys.c py/objmodule.c py/runtime.c
+#: py/modsys.c py/runtime.c
 msgid "%q moved from %q to %q"
 msgstr ""
 
@@ -225,6 +229,7 @@ msgstr ""
 #: ports/raspberrypi/bindings/cyw43/__init__.c py/argcheck.c py/objexcept.c
 #: shared-bindings/bitmapfilter/__init__.c shared-bindings/canio/CAN.c
 #: shared-bindings/digitalio/Pull.c shared-bindings/supervisor/__init__.c
+#: shared-module/audiofilters/Filter.c shared-module/displayio/__init__.c
 #: shared-module/synthio/Synthesizer.c
 msgid "%q must be of type %q or %q, not %q"
 msgstr "%q musí být typu %q nebo %q, ne %q"
@@ -234,6 +239,7 @@ msgid "%q must be of type %q, %q, or %q, not %q"
 msgstr ""
 
 #: py/argcheck.c py/runtime.c shared-bindings/bitmapfilter/__init__.c
+#: shared-module/audiodelays/MultiTapDelay.c shared-module/synthio/Note.c
 #: shared-module/synthio/__init__.c
 msgid "%q must be of type %q, not %q"
 msgstr "%q musí být typu %q, ne %q"
@@ -549,7 +555,6 @@ msgstr "Všechny časovače pro tento pin jsou používány"
 #: ports/nordic/common-hal/pulseio/PulseIn.c
 #: ports/nordic/peripherals/nrf/timers.c
 #: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
-#: ports/stm/peripherals/timers.c
 msgid "All timers in use"
 msgstr "Všechny časovače jsou používány"
 
@@ -575,6 +580,7 @@ msgstr "Již běží"
 
 #: ports/espressif/common-hal/wifi/Radio.c
 #: ports/raspberrypi/common-hal/wifi/Radio.c
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
 msgid "Already scanning for wifi networks"
 msgstr "Již skenuje wifi sítě"
 
@@ -601,6 +607,10 @@ msgstr "Pole musí obsahovat poloviční slova (typ „H“)"
 msgid "Array values should be single bytes."
 msgstr "Hodnoty pole by měly být jednoduché bajty."
 
+#: ports/atmel-samd/common-hal/spitarget/SPITarget.c
+msgid "Async SPI transfer in progress on this bus, keep awaiting."
+msgstr ""
+
 #: shared-module/memorymonitor/AllocationAlarm.c
 #, c-format
 msgid "Attempt to allocate %d blocks"
@@ -609,6 +619,11 @@ msgstr "Pokus o alokování %d bloků"
 #: ports/raspberrypi/audio_dma.c
 msgid "Audio conversion not implemented"
 msgstr "Konverze audia není implementována"
+
+#: ports/raspberrypi/common-hal/audiobusio/I2SOut.c
+#: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
+msgid "Audio source error"
+msgstr ""
 
 #: shared-bindings/wifi/Radio.c
 msgid "AuthMode.OPEN is not used with password"
@@ -746,6 +761,10 @@ msgid "Can only alarm on two low pins from deep sleep."
 msgstr ""
 "Lze nastavit alarm na maximálně dvou pinech ve stavu low při hlubokém spánku."
 
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Can't construct AudioOut because continuous channel already open"
+msgstr ""
+
 #: ports/espressif/common-hal/_bleio/Characteristic.c
 #: ports/nordic/common-hal/_bleio/Characteristic.c
 msgid "Can't set CCCD on local Characteristic"
@@ -791,8 +810,8 @@ msgid "Cannot record to a file"
 msgstr "Nelze nahrávat do souboru"
 
 #: shared-module/storage/__init__.c
-msgid "Cannot remount '/' when visible via USB."
-msgstr "Není možné znovu připojit '/', pokud je viditelné pomocí USB."
+msgid "Cannot remount path when visible via USB."
+msgstr ""
 
 #: shared-bindings/digitalio/DigitalInOut.c
 msgid "Cannot set value when direction is input."
@@ -806,6 +825,10 @@ msgstr "Nelze určit RTS nebo CTS v režimu RS485"
 #: py/objslice.c
 msgid "Cannot subclass slice"
 msgstr "Nelze použít řez podtřídy"
+
+#: ports/raspberrypi/common-hal/rp2pio/StateMachine.c
+msgid "Cannot use GPIO0..15 together with GPIO32..47"
+msgstr ""
 
 #: ports/nordic/common-hal/alarm/pin/PinAlarm.c
 msgid "Cannot wake on pin edge, only level"
@@ -870,10 +893,6 @@ msgstr "DAC se již používá"
 #: ports/nordic/common-hal/paralleldisplaybus/ParallelBus.c
 msgid "Data 0 pin must be byte aligned"
 msgstr "Datový pin 0 musí být zarovnán na bajty"
-
-#: shared-module/audiocore/WaveFile.c
-msgid "Data chunk must follow fmt chunk"
-msgstr "Datový blok musí následovat fmt blok"
 
 #: shared-module/jpegio/JpegDecoder.c
 msgid "Data format error (may be broken data)"
@@ -1006,14 +1025,46 @@ msgstr "Připojení se nezdařilo: interní chyba"
 msgid "Failed to connect: timeout"
 msgstr "Nepodařilo se připojit: časový limit"
 
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to create continuous channels: invalid arg"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to create continuous channels: invalid state"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to create continuous channels: no mem"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to create continuous channels: not found"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to enable continuous"
+msgstr ""
+
 #: shared-module/audiomp3/MP3Decoder.c
 msgid "Failed to parse MP3 file"
 msgstr "Soubor MP3 se nepodařilo analyzovat"
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to register continuous events callback"
+msgstr ""
 
 #: ports/nordic/sd_mutex.c
 #, c-format
 msgid "Failed to release mutex, err 0x%04x"
 msgstr "Nepodařilo se uvolnit mutex, err 0x%04x"
+
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
+msgid "Failed to set hostname"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "Failed to start async audio"
+msgstr ""
 
 #: supervisor/shared/safe_mode.c
 msgid "Failed to write internal flash."
@@ -1023,12 +1074,13 @@ msgstr "Nepodařilo se zapsat do interní paměti."
 msgid "File exists"
 msgstr "soubor existuje"
 
-#: shared-module/os/getenv.c
+#: shared-module/lvfontio/OnDiskFont.c shared-module/os/getenv.c
 msgid "File not found"
 msgstr "Soubor nenalezen"
 
 #: ports/atmel-samd/common-hal/canio/Listener.c
 #: ports/espressif/common-hal/canio/Listener.c
+#: ports/mimxrt10xx/common-hal/canio/Listener.c
 #: ports/stm/common-hal/canio/Listener.c
 msgid "Filters too complex"
 msgstr "Filtry jsou příliš komplexní"
@@ -1163,6 +1215,7 @@ msgid "Insufficient stream input buffer"
 msgstr ""
 
 #: ports/espressif/common-hal/wifi/Radio.c
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
 msgid "Interface must be started"
 msgstr "Rozhraní musí být nastartováno"
 
@@ -1219,6 +1272,7 @@ msgstr ""
 #: shared-bindings/digitalio/DigitalInOut.c
 #: shared-bindings/epaperdisplay/EPaperDisplay.c shared-bindings/pwmio/PWMOut.c
 #: shared-module/aurora_epaper/aurora_framebuffer.c
+#: shared-module/lvfontio/OnDiskFont.c
 msgid "Invalid %q"
 msgstr "Špatný %s"
 
@@ -1282,6 +1336,7 @@ msgid "Invalid hex password"
 msgstr "Špatné heslo v hex"
 
 #: ports/espressif/common-hal/wifi/Radio.c
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
 msgid "Invalid multicast MAC address"
 msgstr "Chybná multicastová MAC adresa"
 
@@ -1294,6 +1349,7 @@ msgid "Invalid socket for TLS"
 msgstr "Chybný soket pro TLS"
 
 #: ports/espressif/common-hal/espidf/__init__.c
+#: ports/nordic/common-hal/_bleio/__init__.c
 msgid "Invalid state"
 msgstr "Chybný stav"
 
@@ -1336,6 +1392,11 @@ msgstr "MAC adresa byla chybná"
 #: ports/espressif/common-hal/_bleio/Characteristic.c
 #: ports/espressif/common-hal/_bleio/Descriptor.c
 msgid "MITM security not supported"
+msgstr ""
+
+#: ports/stm/common-hal/sdioio/SDCard.c
+#, c-format
+msgid "MMC/SDIO Clock Error %x"
 msgstr ""
 
 #: shared-bindings/is31fl3741/IS31FL3741.c
@@ -1383,7 +1444,8 @@ msgstr "Chybí jmp_pin. %q[%u] skáče na pin"
 msgid "Mount point directory missing"
 msgstr ""
 
-#: shared-bindings/busio/UART.c shared-bindings/displayio/Group.c
+#: ports/zephyr-cp/bindings/zephyr_serial/UART.c shared-bindings/busio/UART.c
+#: shared-bindings/displayio/Group.c
 msgid "Must be a %q subclass."
 msgstr "Musí být podtřída %q."
 
@@ -1523,6 +1585,10 @@ msgstr "SDA nebo SCL zřejmě nemá pull up; zkontroluj zapojení"
 msgid "No pulldown on pin; 1Mohm recommended"
 msgstr "Žádný pulldown na pinu; doporučeno 1Mohm"
 
+#: shared-module/touchio/TouchIn.c
+msgid "No pullup on pin; 1Mohm recommended"
+msgstr ""
+
 #: py/moderrno.c
 msgid "No space left on device"
 msgstr "Na zařízení nezůstal žádný prostor"
@@ -1623,15 +1689,6 @@ msgstr "Na tomto hardware je dostupná pouze detekce hrany"
 msgid "Only int or string supported for ip"
 msgstr "Pro IP je podporován pouze int nebo string"
 
-#: shared-module/displayio/OnDiskBitmap.c
-#, c-format
-msgid ""
-"Only monochrome, indexed 4bpp or 8bpp, and 16bpp or greater BMPs supported: "
-"%d bpp given"
-msgstr ""
-"Podporovány jsou pouze černobílé, indexované 4 bpp nebo 8 bpp a 16 bpp nebo "
-"vyšší BMP: bitmapa má %d bpp"
-
 #: ports/espressif/common-hal/alarm/touch/TouchAlarm.c
 msgid "Only one %q can be set in deep sleep."
 msgstr "Pouze jeden %q lze nastavit v hlubokém spánku."
@@ -1682,6 +1739,7 @@ msgstr "Došla paměť"
 
 #: ports/espressif/common-hal/socketpool/Socket.c
 #: ports/raspberrypi/common-hal/socketpool/Socket.c
+#: ports/zephyr-cp/common-hal/socketpool/Socket.c
 msgid "Out of sockets"
 msgstr "Došly sockety"
 
@@ -1700,6 +1758,10 @@ msgstr "PWM kanál je již využíván"
 #: ports/raspberrypi/common-hal/countio/Counter.c
 msgid "PWM slice channel A already in use"
 msgstr "PWM kanál A je již využíván"
+
+#: shared-bindings/spitarget/SPITarget.c
+msgid "Packet buffers for an SPI transfer must have the same length."
+msgstr ""
 
 #: shared-module/jpegio/JpegDecoder.c
 msgid "Parameter error"
@@ -1951,11 +2013,13 @@ msgstr ""
 #: shared-bindings/displayio/TileGrid.c
 #: shared-bindings/memorymonitor/AllocationSize.c
 #: shared-bindings/pulseio/PulseIn.c
+#: shared-bindings/tilepalettemapper/TilePaletteMapper.c
 msgid "Slices not supported"
 msgstr ""
 
 #: ports/espressif/common-hal/socketpool/SocketPool.c
 #: ports/raspberrypi/common-hal/socketpool/SocketPool.c
+#: ports/zephyr-cp/common-hal/socketpool/SocketPool.c
 msgid "SocketPool can only be used with wifi.radio"
 msgstr "SocketPool je možné použít pouze s wifi.radio"
 
@@ -1995,7 +2059,7 @@ msgstr "Výše uvedená výjimka byla přímá příčina následující výjimk
 msgid "The length of rgb_pins must be 6, 12, 18, 24, or 30"
 msgstr "Počet prvků rgb_pin musí být 6, 12, 18, 24, nebo 30"
 
-#: shared-module/audiodelays/Echo.c shared-module/audiomixer/MixerVoice.c
+#: shared-module/audiocore/__init__.c
 msgid "The sample's %q does not match"
 msgstr ""
 
@@ -2017,7 +2081,9 @@ msgstr ""
 msgid "Tile height must exactly divide bitmap height"
 msgstr ""
 
-#: shared-bindings/displayio/TileGrid.c shared-module/displayio/TileGrid.c
+#: shared-bindings/displayio/TileGrid.c
+#: shared-bindings/tilepalettemapper/TilePaletteMapper.c
+#: shared-module/displayio/TileGrid.c
 msgid "Tile index out of bounds"
 msgstr ""
 
@@ -2156,6 +2222,10 @@ msgstr ""
 msgid "Unable to read color palette data"
 msgstr "Nelze číst data palety barev"
 
+#: ports/mimxrt10xx/common-hal/canio/CAN.c
+msgid "Unable to send CAN Message: all Tx message buffers are busy"
+msgstr ""
+
 #: ports/espressif/common-hal/mdns/Server.c
 #: ports/raspberrypi/common-hal/mdns/Server.c
 msgid "Unable to start mDNS query"
@@ -2257,6 +2327,7 @@ msgid "Unsupported hash algorithm"
 msgstr "Nepodporovaný hash algoritmus"
 
 #: ports/espressif/common-hal/socketpool/Socket.c
+#: ports/zephyr-cp/common-hal/socketpool/Socket.c
 msgid "Unsupported socket type"
 msgstr ""
 
@@ -2336,6 +2407,7 @@ msgstr "Při spuštění jsi stiskl obě tlačítka."
 #: ports/espressif/boards/m5stack_core_fire/mpconfigboard.h
 #: ports/espressif/boards/m5stack_stick_c/mpconfigboard.h
 #: ports/espressif/boards/m5stack_stick_c_plus/mpconfigboard.h
+#: ports/espressif/boards/m5stack_stick_c_plus2/mpconfigboard.h
 msgid "You pressed button A at start up."
 msgstr "Při spuštění jsi stiskl tlačítko A."
 
@@ -2349,6 +2421,7 @@ msgstr "Při spuštění jsi stiskl tlačítko BOOT"
 
 #: ports/espressif/boards/adafruit_feather_esp32c6_4mbflash_nopsram/mpconfigboard.h
 #: ports/espressif/boards/adafruit_itsybitsy_esp32/mpconfigboard.h
+#: ports/espressif/boards/waveshare_esp32_c6_lcd_1_47/mpconfigboard.h
 msgid "You pressed the BOOT button at start up."
 msgstr ""
 
@@ -2407,6 +2480,10 @@ msgstr ""
 
 #: shared-bindings/i2ctarget/I2CTarget.c
 msgid "addresses is empty"
+msgstr ""
+
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "already playing"
 msgstr ""
 
 #: py/compile.c
@@ -2487,6 +2564,10 @@ msgstr ""
 msgid "attributes not supported"
 msgstr ""
 
+#: ports/espressif/common-hal/audioio/AudioOut.c
+msgid "audio format not supported"
+msgstr ""
+
 #: extmod/ulab/code/ulab_tools.c
 msgid "axis is out of bounds"
 msgstr "osa je mimo rozsah"
@@ -2523,6 +2604,10 @@ msgstr ""
 msgid "binary op %q not implemented"
 msgstr ""
 
+#: ports/espressif/common-hal/audiobusio/PDMIn.c
+msgid "bit_depth must be 8, 16, 24, or 32."
+msgstr ""
+
 #: shared-module/bitmapfilter/__init__.c
 msgid "bitmap size and depth must match"
 msgstr ""
@@ -2535,7 +2620,16 @@ msgstr "velikosti bitmapy musí odpovídat"
 msgid "bits must be 32 or less"
 msgstr "počet bitů nesmí přesáhnout 32"
 
-#: shared-bindings/audiodelays/Echo.c shared-bindings/audiomixer/Mixer.c
+#: shared-bindings/audiodelays/Chorus.c shared-bindings/audiodelays/Echo.c
+#: shared-bindings/audiodelays/MultiTapDelay.c
+#: shared-bindings/audiodelays/PitchShift.c
+#: shared-bindings/audiofilters/Distortion.c
+#: shared-bindings/audiodelays/Reverb.c
+msgid "bits_per_sample must be 16"
+msgstr ""
+
+#: shared-bindings/audiodelays/Echo.c shared-bindings/audiofilters/Distortion.c
+#: shared-bindings/audiofilters/Filter.c shared-bindings/audiomixer/Mixer.c
 msgid "bits_per_sample must be 8 or 16"
 msgstr ""
 
@@ -2616,7 +2710,7 @@ msgstr ""
 msgid "can't cancel self"
 msgstr "nelze zrušit sám sebe"
 
-#: shared-module/adafruit_pixelbuf/PixelBuf.c
+#: py/obj.c shared-module/adafruit_pixelbuf/PixelBuf.c
 msgid "can't convert %q to %q"
 msgstr "není možné převést %q na %q"
 
@@ -3403,10 +3497,6 @@ msgstr ""
 msgid "label redefined"
 msgstr ""
 
-#: shared-bindings/audiomixer/MixerVoice.c
-msgid "level must be between 0 and 1"
-msgstr ""
-
 #: py/objarray.c
 msgid "lhs and rhs should be compatible"
 msgstr ""
@@ -3956,6 +4046,10 @@ msgstr ""
 msgid "rsplit(None,n)"
 msgstr ""
 
+#: shared-bindings/audiodelays/Reverb.c
+msgid "samples_signed must be true"
+msgstr ""
+
 #: ports/atmel-samd/common-hal/audiobusio/PDMIn.c
 #: ports/raspberrypi/common-hal/audiobusio/PDMIn.c
 msgid "sampling rate out of range"
@@ -4241,7 +4335,9 @@ msgstr "neshoduje se '%c' ve formátu"
 msgid "unreadable attribute"
 msgstr ""
 
-#: shared-bindings/displayio/TileGrid.c shared-bindings/vectorio/VectorShape.c
+#: shared-bindings/displayio/TileGrid.c shared-bindings/terminalio/Terminal.c
+#: shared-bindings/tilepalettemapper/TilePaletteMapper.c
+#: shared-bindings/vectorio/VectorShape.c
 msgid "unsupported %q type"
 msgstr "nepodporovaný typ% q"
 
@@ -4321,6 +4417,7 @@ msgstr ""
 
 #: ports/espressif/common-hal/wifi/Radio.c
 #: ports/raspberrypi/common-hal/wifi/Radio.c
+#: ports/zephyr-cp/common-hal/wifi/Radio.c
 msgid "wifi is not enabled"
 msgstr ""
 
@@ -4385,6 +4482,20 @@ msgstr ""
 #: extmod/ulab/code/scipy/signal/signal.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr ""
+
+#~ msgid "Cannot remount '/' when visible via USB."
+#~ msgstr "Není možné znovu připojit '/', pokud je viditelné pomocí USB."
+
+#~ msgid "Data chunk must follow fmt chunk"
+#~ msgstr "Datový blok musí následovat fmt blok"
+
+#, c-format
+#~ msgid ""
+#~ "Only monochrome, indexed 4bpp or 8bpp, and 16bpp or greater BMPs "
+#~ "supported: %d bpp given"
+#~ msgstr ""
+#~ "Podporovány jsou pouze černobílé, indexované 4 bpp nebo 8 bpp a 16 bpp "
+#~ "nebo vyšší BMP: bitmapa má %d bpp"
 
 #~ msgid "init I2C"
 #~ msgstr "inicializace I2C"

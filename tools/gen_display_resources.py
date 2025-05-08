@@ -234,9 +234,7 @@ displayio_tilegrid_t supervisor_blinka_sprite = {{
     .in_group = true
 }};
 #endif
-""".format(
-        blinka_size
-    )
+""".format(blinka_size)
 )
 
 c_file.write(
@@ -285,9 +283,7 @@ displayio_tilegrid_t supervisor_terminal_scroll_area_text_grid = {{
     .inline_tiles = false,
     .in_group = true
 }};
-""".format(
-        len(all_characters), tile_x, tile_y
-    )
+""".format(len(all_characters), tile_x, tile_y)
 )
 
 c_file.write(
@@ -315,17 +311,13 @@ displayio_tilegrid_t supervisor_terminal_status_bar_text_grid = {{
     .inline_tiles = false,
     .in_group = true
 }};
-""".format(
-        len(all_characters), tile_x, tile_y
-    )
+""".format(len(all_characters), tile_x, tile_y)
 )
 
 c_file.write(
     """\
 const uint32_t font_bitmap_data[{}] = {{
-""".format(
-        bytes_per_row * tile_y // 4
-    )
+""".format(bytes_per_row * tile_y // 4)
 )
 
 for i, word in enumerate(struct.iter_unpack("<I", b)):
@@ -353,9 +345,7 @@ displayio_bitmap_t supervisor_terminal_font_bitmap = {{
     .bitmask = 0x01,
     .read_only = true
 }};
-""".format(
-        len(all_characters) * tile_x, tile_y, bytes_per_row / 4
-    )
+""".format(len(all_characters) * tile_x, tile_y, bytes_per_row / 4)
 )
 
 
@@ -369,16 +359,14 @@ const fontio_builtinfont_t supervisor_terminal_font = {{
     .unicode_characters = (const uint8_t*) "{}",
     .unicode_characters_len = {}
 }};
-""".format(
-        tile_x, tile_y, extra_characters, len(extra_characters.encode("utf-8"))
-    )
+""".format(tile_x, tile_y, extra_characters, len(extra_characters.encode("utf-8")))
 )
 
 c_file.write(
     """\
 terminalio_terminal_obj_t supervisor_terminal = {
     .base = { .type = &terminalio_terminal_type },
-    .font = &supervisor_terminal_font,
+    .font = MP_OBJ_FROM_PTR(&supervisor_terminal_font),
     .cursor_x = 0,
     .cursor_y = 0,
     .scroll_area = NULL,

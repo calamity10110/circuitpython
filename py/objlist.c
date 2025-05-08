@@ -485,10 +485,11 @@ static const mp_rom_map_elem_t list_locals_dict_table[] = {
 
 static MP_DEFINE_CONST_DICT(list_locals_dict, list_locals_dict_table);
 
+// CIRCUITPY-CHANGE: Diagnose json.dump on invalid types
 MP_DEFINE_CONST_OBJ_TYPE(
     mp_type_list,
     MP_QSTR_list,
-    MP_TYPE_FLAG_ITER_IS_GETITER,
+    MP_TYPE_FLAG_ITER_IS_GETITER | MP_TYPE_FLAG_PRINT_JSON,
     make_new, mp_obj_list_make_new,
     print, list_print,
     unary_op, list_unary_op,
@@ -503,12 +504,14 @@ void mp_obj_list_init(mp_obj_list_t *o, size_t n) {
     o->base.type = &mp_type_list;
     o->alloc = n < LIST_MIN_ALLOC ? LIST_MIN_ALLOC : n;
     o->len = n;
-    o->items = m_new(mp_obj_t, o->alloc);
+    // CIRCUITPY-CHANGE: Use m_malloc_items because these are mp_obj_t
+    o->items = m_malloc_items(o->alloc);
     mp_seq_clear(o->items, n, o->alloc, sizeof(*o->items));
 }
 
 static mp_obj_list_t *list_new(size_t n) {
-    mp_obj_list_t *o = m_new_obj(mp_obj_list_t);
+    // CIRCUITPY-CHANGE: Use mp_obj_malloc because it is a Python object
+    mp_obj_list_t *o = mp_obj_malloc(mp_obj_list_t, &mp_type_list);
     mp_obj_list_init(o, n);
     return o;
 }

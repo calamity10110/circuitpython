@@ -137,6 +137,9 @@ endif
 ifeq ($(CIRCUITPY_AUDIOFILTERS),1)
 SRC_PATTERNS += audiofilters/%
 endif
+ifeq ($(CIRCUITPY_AUDIOFREEVERB),1)
+SRC_PATTERNS += audiofreeverb/%
+endif
 ifeq ($(CIRCUITPY_AUDIOMIXER),1)
 SRC_PATTERNS += audiomixer/%
 endif
@@ -162,7 +165,7 @@ endif
 ifeq ($(CIRCUITPY_BITOPS),1)
 SRC_PATTERNS += bitops/%
 endif
-ifeq ($(CIRCUITPY_BLEIO),1)
+ifeq ($(CIRCUITPY_BLEIO_NATIVE),1)
 SRC_PATTERNS += _bleio/%
 endif
 ifeq ($(CIRCUITPY_BOARD),1)
@@ -369,6 +372,9 @@ endif
 ifeq ($(CIRCUITPY_SOCKETPOOL),1)
 SRC_PATTERNS += socketpool/%
 endif
+ifeq ($(CIRCUITPY_SPITARGET),1)
+SRC_PATTERNS += spitarget/%
+endif
 ifeq ($(CIRCUITPY_SSL),1)
 SRC_PATTERNS += ssl/%
 endif
@@ -392,6 +398,12 @@ SRC_PATTERNS += terminalio/% fontio/%
 endif
 ifeq ($(CIRCUITPY_FONTIO),1)
 SRC_PATTERNS += fontio/%
+endif
+ifeq ($(CIRCUITPY_LVFONTIO),1)
+SRC_PATTERNS += lvfontio/%
+endif
+ifeq ($(CIRCUITPY_TILEPALETTEMAPPER),1)
+SRC_PATTERNS += tilepalettemapper/%
 endif
 ifeq ($(CIRCUITPY_TIME),1)
 SRC_PATTERNS += time/%
@@ -539,6 +551,8 @@ SRC_COMMON_HAL_ALL = \
 	socketpool/__init__.c \
 	socketpool/SocketPool.c \
 	socketpool/Socket.c \
+	spitarget/SPITarget.c \
+	spitarget/__init__.c \
 	usb_host/__init__.c \
 	usb_host/Port.c \
 	watchdog/WatchDogMode.c \
@@ -550,15 +564,27 @@ SRC_COMMON_HAL_ALL = \
 	wifi/ScannedNetworks.c \
 	wifi/__init__.c \
 
-ifeq ($(CIRCUITPY_BLEIO_HCI),1)
-# Helper code for _bleio HCI.
-SRC_C += \
-	common-hal/_bleio/att.c \
-	common-hal/_bleio/hci.c \
-
-endif
-
 SRC_COMMON_HAL = $(filter $(SRC_PATTERNS), $(SRC_COMMON_HAL_ALL))
+
+ifeq ($(CIRCUITPY_BLEIO_HCI),1)
+# HCI device-specific HAL and helper sources.
+SRC_DEVICES_HAL += \
+	_bleio/att.c \
+	_bleio/hci.c \
+    _bleio/Adapter.c \
+	_bleio/Attribute.c \
+	_bleio/Characteristic.c \
+	_bleio/CharacteristicBuffer.c \
+	_bleio/Connection.c \
+	_bleio/Descriptor.c \
+	_bleio/PacketBuffer.c \
+	_bleio/Service.c \
+	_bleio/UUID.c \
+	_bleio/__init__.c
+# HCI device-specific bindings.
+SRC_DEVICES_BINDINGS += \
+	supervisor/bluetooth.c
+endif
 
 # These don't have corresponding files in each port but are still located in
 # shared-bindings to make it clear what the contents of the modules are.
@@ -594,7 +620,25 @@ $(filter $(SRC_PATTERNS), \
 	supervisor/StatusBar.c \
 	wifi/AuthMode.c \
 	wifi/Packet.c \
+	wifi/PowerManagement.c \
 )
+
+ifeq ($(CIRCUITPY_BLEIO_HCI),1)
+# Common _bleio bindings used by HCI.
+SRC_BINDINGS_ENUMS += \
+	_bleio/Address.c \
+	_bleio/Adapter.c \
+	_bleio/Attribute.c \
+	_bleio/Characteristic.c \
+	_bleio/CharacteristicBuffer.c \
+	_bleio/Connection.c \
+	_bleio/Descriptor.c \
+	_bleio/PacketBuffer.c \
+	_bleio/ScanEntry.c \
+	_bleio/Service.c \
+	_bleio/UUID.c \
+	_bleio/__init__.c
+endif
 
 ifeq ($(CIRCUITPY_SAFEMODE_PY),1)
 SRC_BINDINGS_ENUMS += \
@@ -624,9 +668,16 @@ SRC_SHARED_MODULE_ALL = \
 	audiocore/WaveFile.c \
 	audiocore/__init__.c \
 	audiodelays/Echo.c \
+	audiodelays/Chorus.c \
+	audiodelays/PitchShift.c \
+	audiodelays/MultiTapDelay.c \
 	audiodelays/__init__.c \
+	audiofilters/Distortion.c \
 	audiofilters/Filter.c \
+	audiofilters/Phaser.c \
 	audiofilters/__init__.c \
+	audiofreeverb/__init__.c \
+	audiofreeverb/Freeverb.c \
 	audioio/__init__.c \
 	audiomixer/Mixer.c \
 	audiomixer/MixerVoice.c \
@@ -665,6 +716,8 @@ SRC_SHARED_MODULE_ALL = \
 	floppyio/__init__.c \
 	fontio/BuiltinFont.c \
 	fontio/__init__.c \
+	lvfontio/OnDiskFont.c\
+	lvfontio/__init__.c \
 	fourwire/__init__.c \
 	fourwire/FourWire.c \
 	framebufferio/FramebufferDisplay.c \
@@ -725,12 +778,15 @@ SRC_SHARED_MODULE_ALL = \
 	synthio/__init__.c \
 	terminalio/Terminal.c \
 	terminalio/__init__.c \
+	tilepalettemapper/__init__.c \
+	tilepalettemapper/TilePaletteMapper.c \
 	time/__init__.c \
 	traceback/__init__.c \
 	uheap/__init__.c \
 	usb/__init__.c \
 	usb/core/__init__.c \
 	usb/core/Device.c \
+	usb/util/__init__.c \
 	ustack/__init__.c \
 	vectorio/Circle.c \
 	vectorio/Polygon.c \
@@ -743,6 +799,21 @@ SRC_SHARED_MODULE_ALL = \
 
 # All possible sources are listed here, and are filtered by SRC_PATTERNS.
 SRC_SHARED_MODULE = $(filter $(SRC_PATTERNS), $(SRC_SHARED_MODULE_ALL))
+
+SRC_COMMON_HAL_EXPANDED = $(addprefix shared-bindings/, $(SRC_COMMON_HAL)) \
+                          $(addprefix shared-bindings/, $(SRC_BINDINGS_ENUMS)) \
+                          $(addprefix common-hal/, $(SRC_COMMON_HAL)) \
+						  $(addprefix devices/ble_hci/common-hal/, $(SRC_DEVICES_HAL)) \
+						  $(addprefix devices/ble_hci/, $(SRC_DEVICES_BINDINGS))
+
+SRC_SHARED_MODULE_EXPANDED = $(addprefix shared-bindings/, $(SRC_SHARED_MODULE)) \
+                             $(addprefix shared-module/, $(SRC_SHARED_MODULE)) \
+                             $(addprefix shared-module/, $(SRC_SHARED_MODULE_INTERNAL))
+
+# There may be duplicates between SRC_COMMON_HAL_EXPANDED and SRC_SHARED_MODULE_EXPANDED,
+# because a few modules have files both in common-hal/ and shared-module/.
+# Doing a $(sort ...) removes duplicates as part of sorting.
+SRC_COMMON_HAL_SHARED_MODULE_EXPANDED = $(sort $(SRC_COMMON_HAL_EXPANDED) $(SRC_SHARED_MODULE_EXPANDED))
 
 # Use the native touchio if requested. This flag is set conditionally in, say, mpconfigport.h.
 # The presence of common-hal/touchio/* does not imply it's available for all chips in a port,
@@ -775,11 +846,15 @@ SRC_SHARED_MODULE_ALL += \
 	keypad_demux/DemuxKeyMatrix.c
 endif
 
-# If supporting _bleio via HCI, make devices/ble_hci/common-hal/_bleio be includable,
-# and use C source files in devices/ble_hci/common-hal.
 ifeq ($(CIRCUITPY_BLEIO_HCI),1)
+# Add HCI device-specific includes to search path.
 INC += -I$(TOP)/devices/ble_hci
-DEVICES_MODULES += $(TOP)/devices/ble_hci
+# Add HCI shared modules to build.
+SRC_SHARED_MODULE += \
+	_bleio/Address.c \
+	_bleio/Attribute.c \
+	_bleio/ScanEntry.c \
+	_bleio/ScanResults.c
 endif
 
 ifeq ($(CIRCUITPY_AUDIOMP3),1)
@@ -869,11 +944,6 @@ $(filter $(SRC_PATTERNS), \
 	usb/utf16le.c \
 )
 
-SRC_COMMON_HAL_INTERNAL = \
-$(filter $(SRC_PATTERNS), \
-	_bleio/ \
-)
-
 ifeq ($(INTERNAL_LIBM),1)
 SRC_LIBM = \
 $(addprefix lib/,\
@@ -930,7 +1000,7 @@ SRC_CIRCUITPY_COMMON = \
 
 ifeq ($(CIRCUITPY_QRIO),1)
 SRC_CIRCUITPY_COMMON += lib/quirc/lib/decode.c lib/quirc/lib/identify.c lib/quirc/lib/quirc.c lib/quirc/lib/version_db.c
-$(BUILD)/lib/quirc/lib/%.o: CFLAGS += -Wno-shadow -Wno-sign-compare -include shared-module/qrio/quirc_alloc.h
+$(BUILD)/lib/quirc/lib/%.o: CFLAGS += -Wno-type-limits -Wno-shadow -Wno-sign-compare -include shared-module/qrio/quirc_alloc.h
 endif
 
 ifdef LD_TEMPLATE_FILE

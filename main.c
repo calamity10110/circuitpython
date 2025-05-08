@@ -131,9 +131,9 @@ static uint8_t *_allocate_memory(safe_mode_t safe_mode, const char *env_key, siz
     *final_size = default_size;
     #if CIRCUITPY_OS_GETENV
     if (safe_mode == SAFE_MODE_NONE) {
-        (void)common_hal_os_getenv_int(env_key, (mp_int_t *)final_size);
-        if (*final_size < 0) {
-            *final_size = default_size;
+        mp_int_t size;
+        if (common_hal_os_getenv_int(env_key, &size) == GETENV_OK && size > 0) {
+            *final_size = size;
         }
     }
     #endif
@@ -203,6 +203,9 @@ static void start_mp(safe_mode_t safe_mode) {
     mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR__slash_lib));
 
     mp_obj_list_init((mp_obj_list_t *)mp_sys_argv, 0);
+
+    // Always return to root
+    common_hal_os_chdir("/");
 }
 
 static void stop_mp(void) {
@@ -214,6 +217,10 @@ static void stop_mp(void) {
         vfs = vfs->next;
     }
     MP_STATE_VM(vfs_mount_table) = vfs;
+    // The last vfs is CIRCUITPY and the root directory.
+    while (vfs->next != NULL) {
+        vfs = vfs->next;
+    }
     MP_STATE_VM(vfs_cur) = vfs;
     #endif
 
@@ -458,9 +465,12 @@ static bool __attribute__((noinline)) run_code_py(safe_mode_t safe_mode, bool *s
             next_code_configuration->options &= ~SUPERVISOR_NEXT_CODE_OPT_NEWLY_SET;
             next_code_options = next_code_configuration->options;
             if (next_code_configuration->filename[0] != '\0') {
+                if (next_code_configuration->working_directory != NULL) {
+                    common_hal_os_chdir(next_code_configuration->working_directory);
+                }
                 // This is where the user's python code is actually executed:
                 const char *const filenames[] = { next_code_configuration->filename };
-                found_main = maybe_run_list(filenames, MP_ARRAY_SIZE(filenames));
+                found_main = maybe_run_list(filenames, 1);
                 if (!found_main) {
                     serial_write(next_code_configuration->filename);
                     serial_write_compressed(MP_ERROR_TEXT(" not found.\n"));
@@ -772,6 +782,9 @@ static bool __attribute__((noinline)) run_code_py(safe_mode_t safe_mode, bool *s
     #if CIRCUITPY_ALARM
     if (fake_sleeping) {
         board_init();
+        #if CIRCUITPY_DISPLAYIO
+        common_hal_displayio_auto_primary_display();
+        #endif
         // Pretend that the next run is the first run, as if we were reset.
         *simulate_reset = true;
     }
@@ -860,7 +873,7 @@ static void __attribute__ ((noinline)) run_boot_py(safe_mode_t safe_mode) {
 
         #ifdef CIRCUITPY_BOOT_OUTPUT_FILE
         // Get the base filesystem.
-        fs_user_mount_t *vfs = (fs_user_mount_t *)MP_STATE_VM(vfs_mount_table)->obj;
+        fs_user_mount_t *vfs = filesystem_circuitpy();
         FATFS *fs = &vfs->fatfs;
 
         boot_output = NULL;
@@ -896,12 +909,8 @@ static void __attribute__ ((noinline)) run_boot_py(safe_mode_t safe_mode) {
         #endif
     }
 
-    port_post_boot_py(true);
-
     cleanup_after_vm(_exec_result.exception);
     _exec_result.exception = NULL;
-
-    port_post_boot_py(false);
 }
 
 static int run_repl(safe_mode_t safe_mode) {
@@ -974,7 +983,13 @@ static int run_repl(safe_mode_t safe_mode) {
     return exit_code;
 }
 
+#if defined(__ZEPHYR__) && __ZEPHYR__ == 1
+#include <zephyr/console/console.h>
+
+int circuitpython_main(void) {
+#else
 int __attribute__((used)) main(void) {
+    #endif
 
     // initialise the cpu and peripherals
     set_safe_mode(port_init());
@@ -1047,6 +1062,10 @@ int __attribute__((used)) main(void) {
     // displays init after filesystem, since they could share the flash SPI
     board_init();
 
+    #if CIRCUITPY_DISPLAYIO
+    common_hal_displayio_auto_primary_display();
+    #endif
+
     mp_hal_stdout_tx_str(line_clear);
 
     // This is first time we are running CircuitPython after a reset or power-up.
@@ -1091,9 +1110,6 @@ int __attribute__((used)) main(void) {
                 serial_write_compressed(MP_ERROR_TEXT("soft reboot\n"));
             }
             simulate_reset = false;
-
-            // Always return to root before trying to run files.
-            common_hal_os_chdir("/");
 
             if (pyexec_mode_kind == PYEXEC_MODE_FRIENDLY_REPL) {
                 // If code.py did a fake deep sleep, pretend that we

@@ -33,6 +33,17 @@ SRC_BITMAP := \
 	shared-bindings/audiocore/__init__.c \
 	shared-bindings/audiocore/RawSample.c \
 	shared-bindings/audiocore/WaveFile.c \
+	shared-bindings/audiodelays/Echo.c \
+	shared-bindings/audiodelays/Chorus.c \
+	shared-bindings/audiodelays/PitchShift.c \
+	shared-bindings/audiodelays/MultiTapDelay.c \
+	shared-bindings/audiodelays/__init__.c \
+	shared-bindings/audiofilters/Distortion.c \
+	shared-bindings/audiofilters/Filter.c \
+	shared-bindings/audiofilters/Phaser.c \
+	shared-bindings/audiofilters/__init__.c \
+	shared-bindings/audiofreeverb/Freeverb.c \
+	shared-bindings/audiofreeverb/__init__.c \
 	shared-bindings/audiomixer/__init__.c \
 	shared-bindings/audiomixer/Mixer.c \
 	shared-bindings/audiomixer/MixerVoice.c \
@@ -70,6 +81,17 @@ SRC_BITMAP := \
 	shared-module/audiocore/__init__.c \
 	shared-module/audiocore/RawSample.c \
 	shared-module/audiocore/WaveFile.c \
+	shared-module/audiodelays/Echo.c \
+	shared-module/audiodelays/Chorus.c \
+	shared-module/audiodelays/PitchShift.c \
+	shared-module/audiodelays/MultiTapDelay.c \
+	shared-module/audiodelays/__init__.c \
+	shared-module/audiofilters/Distortion.c \
+	shared-module/audiofilters/Filter.c \
+	shared-module/audiofilters/Phaser.c \
+	shared-module/audiofilters/__init__.c \
+	shared-module/audiofreeverb/Freeverb.c \
+	shared-module/audiofreeverb/__init__.c \
 	shared-module/audiomixer/__init__.c \
 	shared-module/audiomp3/MP3Decoder.c \
 	shared-module/audiomixer/Mixer.c \
@@ -127,9 +149,11 @@ $(BUILD)/lib/mp3/src/buffers.o: CFLAGS += -include "shared-module/audiomp3/__ini
 CFLAGS += \
 	-DCIRCUITPY_AESIO=1 \
 	-DCIRCUITPY_AUDIOCORE=1 \
+	-DCIRCUITPY_AUDIOEFFECTS=1 \
+	-DCIRCUITPY_AUDIODELAYS=1 \
+	-DCIRCUITPY_AUDIOFILTERS=1 \
 	-DCIRCUITPY_AUDIOMIXER=1 \
 	-DCIRCUITPY_AUDIOMP3=1 \
-	-DCIRCUITPY_AUDIOMP3_USE_PORT_ALLOCATOR=0 \
 	-DCIRCUITPY_AUDIOCORE_DEBUG=1 \
 	-DCIRCUITPY_BITMAPTOOLS=1 \
 	-DCIRCUITPY_CODEOP=1 \

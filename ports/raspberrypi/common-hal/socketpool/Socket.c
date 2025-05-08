@@ -35,7 +35,7 @@
 #include "lwip/timeouts.h"
 #include "lwip/udp.h"
 
-#include "sdk/src/rp2_common/pico_cyw43_arch/include/pico/cyw43_arch.h"
+#include "pico/cyw43_arch.h"
 
 mp_obj_t socketpool_ip_addr_to_str(const ip_addr_t *addr) {
     char ip_str[IPADDR_STRLEN_MAX]; // big enough for any supported address type
@@ -1071,7 +1071,8 @@ bool common_hal_socketpool_socket_listen(socketpool_socket_obj_t *socket, int ba
         socket->incoming.connection.tcp.item = NULL;
     } else {
         socket->incoming.connection.alloc = backlog;
-        socket->incoming.connection.tcp.array = m_new0(struct tcp_pcb *, backlog);
+        socket->incoming.connection.tcp.array = m_malloc_without_collect(sizeof(struct tcp_pcb *) * backlog);
+        memset(socket->incoming.connection.tcp.array, 0, sizeof(struct tcp_pcb *) * backlog);
     }
     socket->incoming.connection.iget = 0;
     socket->incoming.connection.iput = 0;

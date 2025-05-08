@@ -22,6 +22,7 @@ jobs:
         submodules: false
         show-progress: false
         fetch-depth: 1
+        persist-credentials: false
     - name: Set up python
       uses: actions/setup-python@v5
       with:

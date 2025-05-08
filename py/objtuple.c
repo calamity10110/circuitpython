@@ -86,7 +86,8 @@ static mp_obj_t mp_obj_tuple_make_new(const mp_obj_type_t *type_in, size_t n_arg
 
             size_t alloc = 4;
             size_t len = 0;
-            mp_obj_t *items = m_new(mp_obj_t, alloc);
+            // CIRCUITPY-CHANGE
+            mp_obj_t *items = m_malloc_items(alloc);
 
             mp_obj_t iterable = mp_getiter(args[0], NULL);
             mp_obj_t item;
@@ -232,10 +233,11 @@ static const mp_rom_map_elem_t tuple_locals_dict_table[] = {
 
 static MP_DEFINE_CONST_DICT(tuple_locals_dict, tuple_locals_dict_table);
 
+// CIRCUITPY-CHANGE: Diagnose json.dump on invalid types
 MP_DEFINE_CONST_OBJ_TYPE(
     mp_type_tuple,
     MP_QSTR_tuple,
-    MP_TYPE_FLAG_ITER_IS_GETITER,
+    MP_TYPE_FLAG_ITER_IS_GETITER | MP_TYPE_FLAG_PRINT_JSON,
     make_new, mp_obj_tuple_make_new,
     print, mp_obj_tuple_print,
     unary_op, mp_obj_tuple_unary_op,

@@ -581,6 +581,8 @@ typedef mp_obj_t (*mp_fun_kw_t)(size_t n, const mp_obj_t *, mp_map_t *);
 #define MP_TYPE_FLAG_ITER_IS_CUSTOM (0x0100)
 #define MP_TYPE_FLAG_ITER_IS_STREAM (MP_TYPE_FLAG_ITER_IS_ITERNEXT | MP_TYPE_FLAG_ITER_IS_CUSTOM)
 #define MP_TYPE_FLAG_INSTANCE_TYPE (0x0200)
+// CIRCUITPY-CHANGE: check for valid types in json dumps
+#define MP_TYPE_FLAG_PRINT_JSON (0x0400)
 
 typedef enum {
     PRINT_STR = 0,

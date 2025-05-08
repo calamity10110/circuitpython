@@ -4,8 +4,9 @@ ifdef VARIANT_DIR
 # the path as the variant name.
 VARIANT ?= $(notdir $(VARIANT_DIR:/=))
 else
-# If not given on the command line, then default to standard.
-VARIANT ?= standard
+# CIRCUITPY-CHANGE: default variant is coverage
+# If not given on the command line, then default to coverage.
+VARIANT ?= coverage
 VARIANT_DIR ?= variants/$(VARIANT)
 endif
 

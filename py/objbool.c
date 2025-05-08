@@ -84,11 +84,12 @@ static mp_obj_t bool_binary_op(mp_binary_op_t op, mp_obj_t lhs_in, mp_obj_t rhs_
     return mp_binary_op(op, MP_OBJ_NEW_SMALL_INT(value), rhs_in);
 }
 
+// CIRCUITPY-CHANGE: Diagnose json.dump on invalid types
 MP_DEFINE_CONST_OBJ_TYPE(
     // can match all numeric types
     mp_type_bool,
     MP_QSTR_bool,
-    MP_TYPE_FLAG_EQ_CHECKS_OTHER_TYPE,
+    MP_TYPE_FLAG_EQ_CHECKS_OTHER_TYPE | MP_TYPE_FLAG_PRINT_JSON,
     make_new, bool_make_new,
     print, bool_print,
     unary_op, bool_unary_op,
