@@ -1,0 +1,84 @@
+# Example board_setting.toml for RP2040 boards
+# This configuration is based on the Raspberry Pi Pico
+
+[board]
+# Basic board information
+name = "Raspberry Pi Pico"
+mcu = "rp2040"
+port_type = "raspberrypi"
+directory_name = "custom_raspberry_pi_pico"
+chip_variant = "RP2040"
+chip_family = "rp2"
+
+[usb]
+# USB device information
+vid = "0x239A"
+pid = "0x80F4"
+product = "Pico"
+manufacturer = "Raspberry Pi"
+
+[flash]
+# Flash memory configuration
+devices = ["W25Q16JVxQ"]
+
+[led]
+# LED configuration
+status = "GPIO25"
+
+[buses]
+# Default bus configurations
+[buses.i2c]
+scl = "GPIO5"
+sda = "GPIO4"
+
+[buses.spi]
+sck = "GPIO18"
+mosi = "GPIO19"
+miso = "GPIO16"
+
+[buses.uart]
+rx = "GPIO1"
+tx = "GPIO0"
+
+[pins]
+# Pin definitions
+GP0 = "GPIO0"
+GP1 = "GPIO1"
+GP2 = "GPIO2"
+GP3 = "GPIO3"
+GP4 = "GPIO4"
+GP5 = "GPIO5"
+GP6 = "GPIO6"
+GP7 = "GPIO7"
+GP8 = "GPIO8"
+GP9 = "GPIO9"
+GP10 = "GPIO10"
+GP11 = "GPIO11"
+GP12 = "GPIO12"
+GP13 = "GPIO13"
+GP14 = "GPIO14"
+GP15 = "GPIO15"
+GP16 = "GPIO16"
+GP17 = "GPIO17"
+GP18 = "GPIO18"
+GP19 = "GPIO19"
+GP20 = "GPIO20"
+GP21 = "GPIO21"
+GP22 = "GPIO22"
+GP26 = "GPIO26"
+GP27 = "GPIO27"
+GP28 = "GPIO28"
+LED = "GPIO25"
+SMPS_MODE = "GPIO23"
+VBUS_SENSE = "GPIO24"
+VSYS_SENSE = "GPIO29"
+
+[features]
+# Raspberry Pi specific features
+_EVE = true
+PICODVI = true
+
+[pico_sdk_config]
+# Pico SDK specific configuration
+PICO_BOARD = "pico"
+PICO_COPY_TO_RAM = 0

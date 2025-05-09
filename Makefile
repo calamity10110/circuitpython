@@ -21,6 +21,9 @@ CONFDIR      = .
 FORCE         = -E
 VERBOSE       = -v
 
+# Board configuration file for the new build system
+BOARD_CONFIG  ?= board_setting.toml
+
 # path to generated type stubs
 STUBDIR       = circuitpython-stubs
 # Run "make VALIDATE= stubs" to avoid validating generated stub files
@@ -379,3 +382,19 @@ coverage-fresh:
 .PHONY: run-tests
 run-tests:
 	cd tests; MICROPY_MICROPYTHON=../ports/unix/build-coverage/micropython ./run-tests.py
+
+# New build system using board_setting.toml
+.PHONY: generate-board-config
+generate-board-config:
+	$(PYTHON) tools/board_config_generator.py $(BOARD_CONFIG)
+
+.PHONY: build-from-config
+build-from-config: generate-board-config
+	@if [ ! -f $(BOARD_CONFIG) ]; then \
+		echo "Error: Board configuration file $(BOARD_CONFIG) not found"; \
+		exit 1; \
+	fi
+	@PORT_TYPE=$$($(PYTHON) -c "import tomli; print(tomli.load(open('$(BOARD_CONFIG)', 'rb'))['board']['port_type'].lower())"); \
+	BOARD_NAME=$$($(PYTHON) -c "import tomli; print(tomli.load(open('$(BOARD_CONFIG)', 'rb'))['board']['directory_name'])"); \
+	echo "Building for port: $$PORT_TYPE, board: $$BOARD_NAME"; \
+	$(MAKE) -C ports/$$PORT_TYPE BOARD=$$BOARD_NAME

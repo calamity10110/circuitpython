@@ -1,0 +1,129 @@
+# CircuitPython board configuration for Raspberry Pi Pico RP2040
+# This is an example configuration file for the Raspberry Pi Pico
+
+[board]
+name = "Raspberry Pi Pico"
+directory_name = "custom_pico_rp2040"
+mcu = "RP2040"
+port_type = "raspberrypi"
+chip_variant = "RP2040"
+chip_family = "rp2"
+has_crystal = true
+
+[usb]
+vid = "0x2E8A"
+pid = "0x000A"
+product = "Pico RP2040"
+manufacturer = "Raspberry Pi"
+
+[flash]
+devices = ["W25Q16JVxQ"]
+
+[buses]
+i2c.scl = "GP1"
+i2c.sda = "GP0"
+spi.sck = "GP18"
+spi.mosi = "GP19"
+spi.miso = "GP16"
+uart.rx = "GP1"
+uart.tx = "GP0"
+
+[features]
+usb_cdc = true
+usb_hid = true
+usb_midi = true
+usb_msc = true
+digitalio = true
+analogio = true
+busio = true
+neopixel_write = true
+pwmio = true
+pulseio = true
+rotaryio = true
+rtc = true
+sdcardio = true
+touchio = true
+usb_host = true
+
+[pins]
+# Pin definitions
+GP0 = "GPIO0"
+GP1 = "GPIO1"
+GP2 = "GPIO2"
+GP3 = "GPIO3"
+GP4 = "GPIO4"
+GP5 = "GPIO5"
+GP6 = "GPIO6"
+GP7 = "GPIO7"
+GP8 = "GPIO8"
+GP9 = "GPIO9"
+GP10 = "GPIO10"
+GP11 = "GPIO11"
+GP12 = "GPIO12"
+GP13 = "GPIO13"
+GP14 = "GPIO14"
+GP15 = "GPIO15"
+GP16 = "GPIO16"
+GP17 = "GPIO17"
+GP18 = "GPIO18"
+GP19 = "GPIO19"
+GP20 = "GPIO20"
+GP21 = "GPIO21"
+GP22 = "GPIO22"
+GP23 = "GPIO23"
+GP24 = "GPIO24"
+GP25 = "GPIO25"
+GP26 = "GPIO26"
+GP27 = "GPIO27"
+GP28 = "GPIO28"
+LED = "GPIO25"
+
+[aliases]
+# Pin aliases
+TX = "GP0"
+RX = "GP1"
+SDA = "GP0"
+SCL = "GP1"
+SCK = "GP18"
+MOSI = "GP19"
+MISO = "GP16"
+A0 = "GP26"
+A1 = "GP27"
+A2 = "GP28"
+D0 = "GP0"
+D1 = "GP1"
+D2 = "GP2"
+D3 = "GP3"
+D4 = "GP4"
+D5 = "GP5"
+D6 = "GP6"
+D7 = "GP7"
+D8 = "GP8"
+D9 = "GP9"
+D10 = "GP10"
+D11 = "GP11"
+D12 = "GP12"
+D13 = "GP13"
+D14 = "GP14"
+D15 = "GP15"
+D16 = "GP16"
+D17 = "GP17"
+D18 = "GP18"
+D19 = "GP19"
+D20 = "GP20"
+D21 = "GP21"
+D22 = "GP22"
+D23 = "GP23"
+D24 = "GP24"
+D25 = "GP25"
+D26 = "GP26"
+D27 = "GP27"
+D28 = "GP28"
+
+[pico_sdk_config]
+PICO_BOARD = "pico"
+PICO_STACK_SIZE = 4096
+PICO_HEAP_SIZE = 0
+PICO_NO_FLASH = 0
+PICO_COPY_TO_RAM = 0
+PICO_DIVIDER_DISABLE_INTERRUPTS = 0

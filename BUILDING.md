@@ -13,6 +13,15 @@ This document is a quick-start guide only.
 Detailed guides on how to build CircuitPython can be found in the Adafruit Learn system at
 https://learn.adafruit.com/building-circuitpython/
 
+## Two Ways to Build CircuitPython
+
+CircuitPython can be built using two different approaches:
+
+1. **Traditional Build Process** - This is the standard method described in this document.
+2. **Board Configuration System** - A new system that uses a TOML file to define board settings.
+
+For information on the new Board Configuration System, see [BOARD_CONFIG_SYSTEM.md](docs/BOARD_CONFIG_SYSTEM.md).
+
 ## Setup
 
 Please ensure you set up your build environment appropriately, as per the guide.  You will need:

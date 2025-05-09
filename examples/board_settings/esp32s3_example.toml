@@ -1,0 +1,90 @@
+# Example board_setting.toml for ESP32-S3 boards
+# This configuration is based on the ESP32-S3-DevKitC-1-N8R8
+
+[board]
+# Basic board information
+name = "ESP32-S3-DevKitC-1-N8R8"
+mcu = "ESP32S3"
+port_type = "espressif"
+directory_name = "custom_esp32s3_devkitc"
+idf_target = "esp32s3"
+
+[usb]
+# USB device information
+vid = "0x303A"
+pid = "0x7003"
+product = "ESP32-S3-DevKitC-1-N8R8"
+manufacturer = "Espressif"
+
+[flash]
+# Flash memory configuration
+size = "8MB"
+mode = "qio"
+freq = "80m"
+
+[psram]
+# PSRAM configuration
+size = "8MB"
+mode = "opi"
+freq = "80m"
+
+[led]
+# LED configuration
+neopixel = "GPIO48"
+
+[buses]
+# Default bus configurations
+[buses.i2c]
+scl = "GPIO9"
+sda = "GPIO8"
+
+[buses.spi]
+sck = "GPIO36"
+mosi = "GPIO35"
+miso = "GPIO37"
+
+[buses.uart]
+rx = "GPIO44"
+tx = "GPIO43"
+
+[pins]
+# Pin definitions
+D0 = "GPIO0"
+D1 = "GPIO1"
+D2 = "GPIO2"
+D3 = "GPIO3"
+D4 = "GPIO4"
+D5 = "GPIO5"
+D6 = "GPIO6"
+D7 = "GPIO7"
+D8 = "GPIO8"
+D9 = "GPIO9"
+D10 = "GPIO10"
+D11 = "GPIO11"
+D12 = "GPIO12"
+D13 = "GPIO13"
+D14 = "GPIO14"
+D15 = "GPIO15"
+D16 = "GPIO16"
+D17 = "GPIO17"
+D18 = "GPIO18"
+D19 = "GPIO19"
+D20 = "GPIO20"
+D21 = "GPIO21"
+RX = "GPIO44"
+TX = "GPIO43"
+SCL = "GPIO9"
+SDA = "GPIO8"
+SCK = "GPIO36"
+MOSI = "GPIO35"
+MISO = "GPIO37"
+NEOPIXEL = "GPIO48"
+
+[sdkconfig]
+# ESP-IDF SDK configuration
+"CONFIG_ESP32S3_SPIRAM_SUPPORT" = "y"
+"CONFIG_SPIRAM_MODE_OCT" = "y"
+"CONFIG_SPIRAM_TYPE_AUTO" = "y"
+"CONFIG_SPIRAM_SIZE" = "-1"
+"CONFIG_SPIRAM_SPEED_80M" = "y"
+"CONFIG_SPIRAM" = "y"

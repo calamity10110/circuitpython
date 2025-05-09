@@ -1,0 +1,97 @@
+# Example board_setting.toml for nRF52840 boards
+# This configuration is based on the Adafruit Feather nRF52840 Express
+
+[board]
+# Basic board information
+name = "Adafruit Feather nRF52840 Express"
+mcu = "nRF52840"
+port_type = "nordic"
+directory_name = "custom_feather_nrf52840"
+chip_variant = "nRF52840"
+has_crystal = true
+
+[usb]
+# USB device information
+vid = "0x239A"
+pid = "0x802A"
+product = "Feather nRF52840 Express"
+manufacturer = "Adafruit Industries LLC"
+
+[flash]
+# Flash memory configuration
+type = "qspi"  # Options: "qspi", "spi"
+devices = ["GD25Q16C", "W25Q16JVxQ"]
+# QSPI pin configuration
+data0_port = 0
+data0_pin = 17
+data1_port = 0
+data1_pin = 22
+data2_port = 0
+data2_pin = 23
+data3_port = 0
+data3_pin = 21
+sck_port = 0
+sck_pin = 19
+cs_port = 0
+cs_pin = 20
+
+[led]
+# LED configuration
+status = "P1_15"
+neopixel = "P0_16"
+neopixel_power = "P1_14"
+
+[buses]
+# Default bus configurations
+[buses.i2c]
+scl = "P0_11"
+sda = "P0_12"
+
+[buses.spi]
+sck = "P0_14"
+mosi = "P0_13"
+miso = "P0_15"
+
+[buses.uart]
+rx = "P0_24"
+tx = "P0_25"
+
+[pins]
+# Pin definitions
+A0 = "P0_04"
+A1 = "P0_05"
+A2 = "P0_30"
+A3 = "P0_28"
+A4 = "P0_02"
+A5 = "P0_03"
+AREF = "P0_31"
+VOLTAGE_MONITOR = "P0_29"
+BATTERY = "P0_29"
+SWITCH = "P1_02"
+NFC1 = "P0_09"
+NFC2 = "P0_10"
+D2 = "P0_10"
+D5 = "P1_08"
+D6 = "P0_07"
+D9 = "P0_26"
+D10 = "P0_27"
+D11 = "P0_06"
+D12 = "P0_08"
+D13 = "P1_09"
+NEOPIXEL = "P0_16"
+NEOPIXEL_POWER = "P1_14"
+SCK = "P0_14"
+MOSI = "P0_13"
+MISO = "P0_15"
+TX = "P0_25"
+RX = "P0_24"
+SCL = "P0_11"
+SDA = "P0_12"
+L = "P1_15"
+BLUE_LED = "P1_10"
+
+[aliases]
+# Pin aliases
+LED = "L"
+RED_LED = "L"
+D3 = "L"

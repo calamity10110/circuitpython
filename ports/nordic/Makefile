@@ -10,7 +10,7 @@ ifneq ($(SD), )
 	include bluetooth/bluetooth_common.mk
 endif
 
-CROSS_COMPILE = arm-none-eabi-
+CROSS_COMPILE ?= /opt/gcc-arm/arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-
 
 FATFS_DIR = lib/oofatfs
 

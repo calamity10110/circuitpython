@@ -1,0 +1,84 @@
+# CircuitPython board configuration for Feather nRF52840
+# This is an example configuration file for the Adafruit Feather nRF52840
+
+[board]
+name = "Feather nRF52840"
+directory_name = "custom_feather_nrf52840"
+mcu = "nRF52840"
+port_type = "nordic"
+chip_variant = "nRF52840"
+has_crystal = true
+
+[usb]
+vid = "0x239A"
+pid = "0x8029"
+product = "Feather nRF52840"
+manufacturer = "Adafruit Industries LLC"
+
+[flash]
+type = "qspi"
+data0_port = 0
+data0_pin = 17
+data1_port = 0
+data1_pin = 22
+data2_port = 0
+data2_pin = 23
+data3_port = 0
+data3_pin = 21
+sck_port = 0
+sck_pin = 19
+cs_port = 0
+cs_pin = 20
+devices = ["GD25Q16C", "MX25L1606E", "MX25R1635F"]
+
+[led]
+status = "LED1"
+neopixel = "NEOPIXEL"
+neopixel_power = "NEOPIXEL_POWER"
+
+[buses]
+i2c.scl = "SCL"
+i2c.sda = "SDA"
+spi.sck = "SCK"
+spi.mosi = "MOSI"
+spi.miso = "MISO"
+uart.rx = "RX"
+uart.tx = "TX"
+
+[pins]
+# Pin definitions
+D2 = "P0_10"
+D5 = "P1_08"
+D6 = "P0_07"
+D9 = "P0_26"
+D10 = "P0_27"
+D11 = "P0_06"
+D12 = "P0_08"
+D13 = "P1_09"
+A0 = "P0_04"
+A1 = "P0_05"
+A2 = "P0_30"
+A3 = "P0_28"
+A4 = "P0_02"
+A5 = "P0_03"
+SCK = "P0_14"
+MOSI = "P0_13"
+MISO = "P0_15"
+RX = "P0_24"
+TX = "P0_25"
+SCL = "P0_11"
+SDA = "P0_12"
+AREF = "P0_31"
+NEOPIXEL = "P0_16"
+NEOPIXEL_POWER = "P0_06"
+LED1 = "P1_15"
+LED2 = "P1_10"
+BUTTON = "P1_02"
+VOLTAGE_MONITOR = "P0_29"
+BATTERY = "P0_29"
+SWITCH = "P1_02"
+
+[aliases]
+# Pin aliases
+LED = "LED1"
+BUTTON1 = "BUTTON"
